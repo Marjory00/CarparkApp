@@ -1,0 +1,25 @@
+
+# Dependencies
+# Ignore the node_modules folder where npm packages are installed
+/node_modules
+
+# Logs
+# Ignore npm debug logs, which are generated in the root
+npm-debug.log
+.npm
+
+# Runtime data and build artifacts
+# Ignore environment configuration files
+.env
+.DS_Store
+
+# Express/Backend specific:
+# If you plan to use separate logs or temporary files in the backend
+/backend/logs
+/backend/tmp
+
+# Frontend specific (if you were building it later, but good practice):
+# Although your frontend is currently static, if you introduced
+# a build process (like Webpack), you would ignore the build output folder.
+/frontend/dist 
+/frontend/build
