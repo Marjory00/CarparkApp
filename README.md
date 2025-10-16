@@ -1,8 +1,8 @@
 
 # 🏢 CarparkApp
-## Apartment Visitor Log Application
+## Apartment Visitor Log Application (Full Stack)
 
-This is a simple, browser-based application designed to replace outdated paper logbooks with a digital system for tracking visitors, deliveries, and contractors entering and exiting a residential or apartment complex. It uses basic HTML, CSS, and JavaScript with browser storage (`localStorage`) for a quick and easy deployment.
+This project software is a **Full Stack Application** designed to replace outdated paper logbooks with a robust digital system for tracking visitors, deliveries, and contractors entering and exiting a residential or apartment complex. While the initial proof-of-concept used client-side storage, the current structure features separate **Frontend** and **Backend** components using **Node.js** to deliver a scalable solution for visitor and parking access management.
 
 ### ✍️ Author
 
