@@ -22,13 +22,30 @@ This is a simple, browser-based application designed to replace outdated paper l
 
 ---
 
-### 🛠️ Technology Stack
+## 🛠️ Technology Stack: Full Stack Application
+
+This application is built as a **Full Stack** project, utilizing distinct **Frontend** and **Backend** components for modularity and scalability.
+
+### Languages & Core Technologies
+
+| Component | Technology / Language | Description |
+| :--- | :--- | :--- |
+| **Frontend** | **HTML5** | Provides the basic structure for the application forms and tables (`index.html`). |
+| **Frontend** | **CSS3 / Bootstrap** | Handles styling, ensuring a clean, modern, and **responsive** user interface. |
+| **Frontend** | **JavaScript (JS)** | Manages client-side logic, form handling, and local data persistence (`index.js`). |
+| **Backend** | **Node.js / Express.js** | The server-side runtime environment and framework for handling API routes. |
+| **Backend** | **JavaScript** | The primary language used for all server logic (`server.js`). |
+| **Data Format** | **JSON** | The standard format for transferring data between the client and the server (API requests). |
+
+### File Structure Overview
 
 | Component | Files | Description |
 | :--- | :--- | :--- |
-| **Front-End (Structure)** | `index.html` | Provides the necessary form fields, log table structure, and overall application layout. |
-| **Front-End (Styling)** | `style.css` | Implements a clean, readable, and responsive design for the application. |
-| **Front-End (Logic)** | `index.js` | Manages form submission, data storage (`localStorage`), and dynamic rendering of the visitor log table. |
+| **Frontend (Structure)** | `index.html` | The main page providing the necessary form fields and log table structure. |
+| **Frontend (Styling)** | `style.css` | Implements a clean, readable, and responsive design for the application. |
+| **Frontend (Logic)** | `index.js` | Manages form submission, data storage (`localStorage`), and dynamic rendering of the visitor log table. |
+| **Backend** | `server.js` | Contains the core API logic and server setup for the application. |
+
 
 ---
 
@@ -53,13 +70,17 @@ Since this initial version is purely **front-end** and relies on browser storage
 
 This project is built for **scalability**. While the current version utilizes only client-side storage, the logical separation of the form and log components makes it ready to integrate with a robust back-end for production use across an entire apartment complex.
 
-### Back-End Integration
+### Back-End Integration and Scalability
 
-For a production environment, the following technologies would replace the `localStorage` data management:
+The application includes a dedicated **Backend** component to manage data, replacing the initial client-side `localStorage`. This structure is built for superior **scalability** and **persistence**.
 
-* **Server:** **Node.js** with **Express.js** to handle API requests (Check-in/Check-out).
-* **Database:** **MongoDB** (a NoSQL database) is ideal for storing flexible visitor log records, offering high availability and scalability.
-* **Data Format:** **JSON** would be the standard format for transferring visitor data between the front-end and back-end (RESTful API).
+For a production environment, the following technologies are utilized or planned for future scaling:
+
+* **Current Server:** **Node.js** with **Express.js** to handle API requests (Check-in/Check-out), running the server logic written in **JavaScript**.
+* **Database (Future/Scalability):** **MongoDB** (a NoSQL database) is the chosen solution for storing flexible visitor log records, offering high availability and enterprise-level scalability.
+* **Data Format:** **JSON** remains the standard format for transferring data between the client (Frontend) and the server (Backend) via RESTful API calls.
+* **Other Languages (Planned):** Integration with other languages, frameworks, and libraries (e.g., specific database drivers, utility libraries) can be seamlessly introduced as the application grows.
+
 
 ### Future Features
 
