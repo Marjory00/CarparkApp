@@ -31,6 +31,45 @@ This is a simple, browser-based application designed to replace outdated paper l
 
 ---
 
+### How to Use the App
+
+Since this initial version is purely **front-end** and relies on browser storage, no server setup is needed to run the basic application.
+
+1.  **Open the Application:** Locate the **`index.html`** file in the cloned directory and open it directly in your web browser.
+
+2.  **Check-In a Visitor:**
+    * Fill out the required fields (**Visitor Name**, **Unit / Resident Name**, **Visitor Type**).
+    * Add optional details like **Guest Pass #** or **Parking Pass #**.
+    * Click the **"Check In"** button. The visitor will immediately appear in the **Current & Past Visitors** log.
+
+3.  **Check-Out a Visitor:**
+    * In the log table, find the entry for the visitor who is leaving.
+    * Click the **"Check Out"** button in the **Action** column. The check-out time will be instantly recorded.
+
+---
+
+## 📈 Future Scalability & Potential Technologies
+
+This project is built for **scalability**. While the current version utilizes only client-side storage, the logical separation of the form and log components makes it ready to integrate with a robust back-end for production use across an entire apartment complex.
+
+### Back-End Integration
+
+For a production environment, the following technologies would replace the `localStorage` data management:
+
+* **Server:** **Node.js** with **Express.js** to handle API requests (Check-in/Check-out).
+* **Database:** **MongoDB** (a NoSQL database) is ideal for storing flexible visitor log records, offering high availability and scalability.
+* **Data Format:** **JSON** would be the standard format for transferring visitor data between the front-end and back-end (RESTful API).
+
+### Future Features
+
+The scalable architecture would support advanced features, including:
+
+* **User Authentication:** Separate portals for Security Guards and Property Managers.
+* **Resident Notifications:** SMS or email alerts to residents when their guest arrives.
+* **Advanced Reporting:** Generate reports on visitor frequency, peak times, and compliance audits.
+
+---
+
 ### 🚀 Getting Started
 
 To run this application, you need the three files (`index.html`, `style.css`, `index.js`) in the same directory.
