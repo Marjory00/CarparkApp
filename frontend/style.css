@@ -1,0 +1,152 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #007bff;
+  margin-bottom: 30px;
+}
+
+h2 {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-top: 20px;
+  color: #555;
+}
+
+.form-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+#visitor-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  grid-column: 1 / 3;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+input[type="text"],
+select,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.check-in-btn {
+  grid-column: 1 / 3;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background-color 0.3s;
+}
+
+.check-in-btn:hover {
+  background-color: #218838;
+}
+
+.log-section {
+  overflow-x: auto;
+}
+
+#visitor-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#visitor-log-table th,
+#visitor-log-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+  font-size: 0.9em;
+}
+
+#visitor-log-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+  color: #333;
+}
+
+.check-out-btn {
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.check-out-btn:hover {
+  background-color: #c82333;
+}
+
+.checked-out-row td {
+  background-color: #f8f8f8;
+  color: #777;
+  font-style: italic;
+}
+
+.checked-out-row .check-out-btn {
+  background-color: #6c757d;
+  cursor: default;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  #visitor-form {
+    grid-template-columns: 1fr;
+  }
+  .full-width {
+    grid-column: 1 / 2;
+  }
+  .check-in-btn {
+    grid-column: 1 / 2;
+  }
+  .container {
+    padding: 15px;
+  }
+}
