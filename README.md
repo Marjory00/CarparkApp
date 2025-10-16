@@ -1,5 +1,6 @@
 
-# 🏢 Apartment Visitor Log Application
+# 🏢 CarparkApp
+## Apartment Visitor Log Application
 
 This is a simple, browser-based application designed to replace outdated paper logbooks with a digital system for tracking visitors, deliveries, and contractors entering and exiting a residential or apartment complex. It uses basic HTML, CSS, and JavaScript with browser storage (`localStorage`) for a quick and easy deployment.
 
