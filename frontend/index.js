@@ -8,6 +8,9 @@ class VisitorApp {
         this.renderVisitorLog();
         this.renderParkingPasses();
         this.clearPassPreview();
+        
+        // Ensure the default tab content is displayed on load
+        this.activateDefaultTab(); 
     }
 
     // --- Utility Methods ---
@@ -22,8 +25,6 @@ class VisitorApp {
 
     /**
      * Formats an ISO string date into a user-friendly local time string.
-     * @param {string} isoString - The ISO date string.
-     * @returns {string} The formatted date/time string.
      */
     formatTime(isoString) {
         const date = new Date(isoString);
@@ -50,7 +51,6 @@ class VisitorApp {
 
     /**
      * Renders a full digital parking pass preview.
-     * @param {object} passData - The data of the newly created pass.
      */
     renderPassPreview(passData) {
         const previewEl = document.getElementById('pass-preview-section');
@@ -109,9 +109,6 @@ class VisitorApp {
         document.getElementById('visitor-form').addEventListener('submit', this.handleVisitorCheckIn.bind(this));
         document.getElementById('parking-form').addEventListener('submit', this.handlePassRequest.bind(this));
         
-        // Concierge Email Form Submission
-        document.getElementById('concierge-email-form').addEventListener('submit', this.handleConciergeEmail.bind(this));
-
         // Dynamic Check-Out (event delegation)
         document.getElementById('visitor-log-body').addEventListener('click', (e) => {
             if (e.target.classList.contains('check-out-btn')) {
@@ -119,37 +116,41 @@ class VisitorApp {
                 this.checkOutVisitor(id);
             }
         });
-        
-        // Close modals when clicking the backdrop
-        window.addEventListener('click', (e) => {
-            const conciergeModal = document.getElementById('concierge-modal');
-            const supportModal = document.getElementById('app-support-modal');
-
-            if (e.target === conciergeModal) {
-                closeModal('concierge-modal');
+    }
+    
+    /**
+     * Ensures the default 'log' tab content is displayed on page load.
+     */
+    activateDefaultTab() {
+        const defaultButton = document.querySelector('.tab-button.active');
+        if (defaultButton) {
+            const tabId = defaultButton.getAttribute('data-tab');
+            const defaultContent = document.getElementById(tabId);
+            if (defaultContent) {
+                defaultContent.classList.add('active'); 
             }
-            if (e.target === supportModal) {
-                closeModal('app-support-modal');
-            }
-        });
+        }
     }
 
     /**
      * Handles switching between the application tabs.
-     * @param {Event} e - The click event.
      */
     handleTabSwitch(e) {
         const button = e.currentTarget;
         const tabId = button.getAttribute('data-tab');
         
+        // Remove active class from all buttons and content
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
+        // Add active class to the clicked button and corresponding content
         button.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
-        // IMPORTANT: Clear pass preview when switching to the Visitor Log tab
-        this.clearPassPreview();
+        // Clear pass preview when switching away from the passes tab
+        if (tabId !== 'passes') {
+            this.clearPassPreview();
+        }
     }
 
     // --- Visitor Log Logic ---
@@ -285,38 +286,9 @@ class VisitorApp {
 
         e.target.reset();
     }
-    
-    // --- Modal Contact Logic ---
-
-    handleConciergeEmail(e) {
-        e.preventDefault();
-        
-        const name = document.getElementById('modalName').value;
-        const subject = document.getElementById('modalSubject').value;
-        
-        console.log("Concierge Email Submitted:", { name, subject });
-
-        alert(`Message sent to Concierge! We received your request: "${subject}" from ${name}. We will respond soon to your email.`);
-        
-        document.getElementById('concierge-email-form').reset();
-        closeModal('concierge-modal');
-    }
-}
-
-// Global functions for modal control (called directly from HTML onclick attributes)
-function openModal(id) {
-    document.getElementById(id).style.display = 'block';
-}
-
-function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
 }
 
 // Initialize the application when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
-    // Make global functions available to the browser's window object for HTML onclick
-    window.openModal = openModal;
-    window.closeModal = closeModal;
-    
     new VisitorApp();
 });

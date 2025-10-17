@@ -151,6 +151,69 @@
   </div>
 </div>
 
+<div id="concierge-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('concierge-modal')">&times;</span>
+      <h2 class="modal-title"><i class="fas fa-user-tie"></i> Contact Concierge</h2>
+      <p class="description">How would you like to reach the building staff?</p>
+  
+      <div class="contact-option phone-call">
+        <h3><i class="fas fa-phone"></i> Make a Phone Call</h3>
+        <p>This is for urgent general inquiries and immediate resident matters.</p>
+        <a href="tel:+15551234567" class="call-btn"><i class="fas fa-mobile-alt"></i> Call Now: (555) 123-4567</a>
+      </div>
+  
+      <hr>
+  
+      <div class="contact-option email-send">
+        <h3><i class="fas fa-envelope"></i> Send an Email</h3>
+        <p>For non-urgent requests or detailed documentation.</p>
+        <form id="concierge-email-form">
+          <div class="form-group">
+            <label for="modalName">Your Name / Unit:</label>
+            <input type="text" id="modalName" placeholder="Your Name or Unit Number" required>
+          </div>
+          <div class="form-group">
+            <label for="modalSubject">Subject:</label>
+            <input type="text" id="modalSubject" placeholder="e.g., Package delivery, Maintenance request" required>
+          </div>
+          <div class="form-group">
+            <label for="modalMessage">Message:</label>
+            <textarea id="modalMessage" rows="4" placeholder="Briefly describe your request..."></textarea>
+          </div>
+          <button type="submit" class="check-in-btn full-width"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <div id="app-support-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('app-support-modal')">&times;</span>
+      <h2 class="modal-title app-support-title"><i class="fas fa-headset"></i> Contact App Support</h2>
+      <p class="description">For issues using the system, reporting bugs, or technical questions.</p>
+  
+      <div class="contact-option email-send">
+        <h3><i class="fas fa-bug"></i> Technical Support Request</h3>
+        <p>This will open your default email application to send a detailed request to our technical team.</p>
+        
+        <a href="mailto:support@apollo.com?subject=Visitor%20App%20Technical%20Issue&body=Hello%20Support%20Team%2C%0A%0AI%20am%20experiencing%20an%20issue%20with%20the%20Visitor%20Management%20App.%0A%0AProblem%20Description%3A%20%0A%0A%0AScreenshot%20Link%20(optional)%3A%20%0A%0AUnit%20%2F%20Name%3A%20" 
+           class="call-btn support-email-btn" target="_blank">
+          <i class="fas fa-envelope"></i> Email Support Directly
+        </a>
+      </div>
+  
+      <hr>
+  
+      <div class="contact-option documentation-link">
+        <h3><i class="fas fa-book"></i> Read Documentation</h3>
+        <p>Consult our help guides for troubleshooting common issues.</p>
+        <a href="#" class="call-btn documentation-btn" onclick="alert('Simulating opening documentation link...')">
+          <i class="fas fa-external-link-alt"></i> Open Help Center
+        </a>
+      </div>
+    </div>
+  </div>
 
 
 <!-- END MAIN -->

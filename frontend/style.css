@@ -35,7 +35,331 @@ body {
     margin-bottom: 25px;
 }
 
-/* --- PASS PREVIEW STYLES (NEW) --- */
+h1 {
+  text-align: center;
+  color: var(--primary-brand);
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 15px;
+  font-weight: 500;
+  font-size: 2rem;
+}
+
+h1 i {
+    margin-right: 12px;
+}
+
+h2 {
+  color: var(--text-dark);
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+h3 {
+  color: var(--text-dark);
+  margin-top: 10px;
+  font-weight: 600;
+  font-size: 1.2rem;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.description {
+  margin-bottom: 25px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* -------------------- NOTICE STYLES -------------------- */
+.notice {
+    border-left: 5px solid var(--primary-brand);
+    padding: 20px 30px;
+    background-color: #f7f9fc;
+}
+
+.towing-info {
+    background-color: #fef7e0;
+    border: 1px solid #ffcc66;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 6px;
+    color: #a04200;
+    font-weight: 500;
+}
+
+.towing-info .fa-exclamation-triangle {
+    color: var(--danger-color); 
+    margin-right: 8px;
+}
+
+/* -------------------- TAB STRUCTURE -------------------- */
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--border-color); 
+  border-radius: 6px; 
+  padding: 4px; 
+  margin-bottom: 30px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); 
+}
+
+.tab-button {
+  flex-grow: 1;
+  padding: 10px 15px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  border-radius: 4px; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-button i {
+    margin-right: 8px;
+    color: var(--primary-brand);
+}
+
+.tab-button:hover:not(.active) {
+  background-color: #e0e6eb;
+}
+
+.tab-button.active {
+  color: white; 
+  background-color: var(--primary-brand); 
+  box-shadow: 0 2px 5px rgba(0, 119, 182, 0.3); 
+  transform: none; 
+}
+
+.tab-button.active i {
+    color: white; 
+}
+
+.tab-content {
+  padding: 0;
+  /* CRITICAL: Hide all tab content by default */
+  display: none; 
+}
+
+.tab-content.active {
+  /* CRITICAL: Show only the active tab content */
+  display: block;
+}
+
+/* -------------------- FORM STYLES -------------------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px; 
+  padding: 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.full-width {
+  grid-column: 1 / 3;
+}
+
+label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+label i {
+    margin-right: 5px;
+    color: var(--primary-brand);
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-container);
+  color: var(--text-dark);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--secondary-accent);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
+}
+
+/* -------------------- BUTTONS -------------------- */
+.check-in-btn, .pass-btn, .check-out-btn {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    padding: 14px 25px;
+    border: none;
+    border-radius: 30px; 
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1); 
+    font-size: 0.9rem;
+}
+
+.check-in-btn i, .pass-btn i {
+    margin-right: 8px;
+    font-size: 1.1em;
+}
+
+/* Check In Button */
+.check-in-btn {
+  background-color: var(--success-color); 
+  color: white;
+}
+.check-in-btn:hover {
+  background-color: #27ae60; 
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15); 
+  transform: translateY(-2px);
+}
+
+/* Passes Button */
+.pass-btn {
+  background-color: var(--warning-color); 
+  color: var(--text-dark);
+}
+.pass-btn:hover {
+  background-color: #f39c12;
+  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* Check Out Button */
+.check-out-btn {
+  background-color: var(--danger-color); 
+  color: white;
+  padding: 8px 15px;
+  font-size: 0.8rem;
+  border-radius: 4px; 
+  box-shadow: none; 
+  text-transform: none;
+  letter-spacing: normal;
+  display: inline-flex;
+}
+.check-out-btn:hover {
+  background-color: #c0392b;
+}
+
+/* Disabled/Completed State for Check Out */
+.checked-out-row .check-out-btn {
+  background-color: #bdc3c7; 
+  color: #7f8c8d;
+  cursor: default;
+  box-shadow: none;
+  transform: none;
+}
+
+/* -------------------- LOG TABLE -------------------- */
+.table-responsive {
+    overflow-x: auto;
+}
+
+#visitor-log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#visitor-log-table th,
+#visitor-log-table td {
+  padding: 12px;
+  text-align: left;
+  font-size: 0.88em;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#visitor-log-table th {
+  background-color: #f0f3f5;
+  color: var(--text-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.checked-out-row td {
+  background-color: #fafbfb;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* -------------------- CONTACT BUTTONS (HELP & SUPPORT) -------------------- */
+.contact-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.contact-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  color: white;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+  font-weight: 600;
+  text-align: left;
+}
+
+/* Specific colors for clarity */
+.concierge-btn {
+  background-color: var(--concierge-color);
+}
+
+.support-btn {
+  background-color: var(--support-color);
+}
+
+.contact-btn:hover {
+  transform: translateY(-3px); 
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.contact-btn i {
+    font-size: 2.2em; 
+    margin-bottom: 12px;
+    color: white; 
+    align-self: flex-start;
+}
+
+.contact-btn strong {
+    font-size: 1.2rem; 
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.sub-text {
+  font-size: 0.85em; 
+  font-weight: 400;
+  opacity: 0.9;
+  line-height: 1.3;
+}
+
+/* -------------------- PARKING PASS PREVIEW -------------------- */
 .pass-preview {
     background: linear-gradient(135deg, var(--primary-brand) 0%, #00a8e8 100%);
     color: white;
@@ -120,327 +444,7 @@ body {
     color: var(--warning-color);
 }
 
-
-/* --- REST OF THE CSS --- */
-h1 {
-  text-align: center;
-  color: var(--primary-brand);
-  margin-bottom: 30px;
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 15px;
-  font-weight: 500;
-  font-size: 2rem;
-}
-
-h1 i {
-    margin-right: 12px;
-}
-
-h2 {
-  color: var(--text-dark);
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-weight: 600;
-  font-size: 1.5rem;
-}
-
-h3 {
-  color: var(--text-dark);
-  margin-top: 10px;
-  font-weight: 600;
-  font-size: 1.2rem;
-  padding-bottom: 5px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.description {
-  margin-bottom: 25px;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-/* --- NOTICE STYLES --- */
-.notice {
-    border-left: 5px solid var(--primary-brand);
-    padding: 20px 30px;
-    background-color: #f7f9fc;
-}
-
-.towing-info {
-    background-color: #fef7e0;
-    border: 1px solid #ffcc66;
-    padding: 15px;
-    margin-top: 15px;
-    border-radius: 6px;
-    color: #a04200;
-    font-weight: 500;
-}
-
-.towing-info .fa-exclamation-triangle {
-    color: var(--danger-color); 
-    margin-right: 8px;
-}
-
-/* --- TAB STRUCTURE (MODERN SEGMENTED CONTROL) --- */
-.tab-header {
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--border-color); 
-  border-radius: 6px; 
-  padding: 4px; 
-  margin-bottom: 30px;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); 
-}
-
-.tab-button {
-  flex-grow: 1;
-  padding: 10px 15px;
-  border: none;
-  background-color: transparent;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-dark);
-  transition: all 0.3s ease;
-  border-radius: 4px; 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tab-button i {
-    margin-right: 8px;
-    color: var(--primary-brand);
-}
-
-.tab-button:hover:not(.active) {
-  background-color: #e0e6eb;
-}
-
-.tab-button.active {
-  color: white; 
-  background-color: var(--primary-brand); 
-  box-shadow: 0 2px 5px rgba(0, 119, 182, 0.3); 
-  transform: none; 
-}
-
-.tab-button.active i {
-    color: white; 
-}
-
-.tab-content {
-  padding: 0;
-}
-
-/* --- FORM STYLES --- */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 25px; 
-  padding: 0;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.full-width {
-  grid-column: 1 / 3;
-}
-
-label {
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: var(--text-dark);
-  font-size: 0.95rem;
-}
-
-label i {
-    margin-right: 5px;
-    color: var(--primary-brand);
-}
-
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background-color: var(--bg-container);
-  color: var(--text-dark);
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input:focus, select:focus, textarea:focus {
-  border-color: var(--secondary-accent);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 119, 182, 0.2);
-}
-
-/* --- BUTTONS (Main Action Buttons) --- */
-.check-in-btn, .pass-btn, .check-out-btn {
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    padding: 14px 25px;
-    border: none;
-    border-radius: 30px; 
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.1); 
-    font-size: 0.9rem;
-}
-
-.check-in-btn i, .pass-btn i {
-    margin-right: 8px;
-    font-size: 1.1em;
-}
-
-/* Primary Action: Check In */
-.check-in-btn {
-  background-color: var(--success-color); 
-  color: white;
-}
-.check-in-btn:hover {
-  background-color: #27ae60; 
-  box-shadow: 0 6px 10px rgba(0,0,0,0.15); 
-  transform: translateY(-2px);
-}
-
-/* Secondary Action: Passes */
-.pass-btn {
-  background-color: var(--warning-color); 
-  color: var(--text-dark);
-}
-.pass-btn:hover {
-  background-color: #f39c12;
-  box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-  transform: translateY(-2px);
-}
-
-/* Danger Action: Check Out (Inline Table Button) */
-.check-out-btn {
-  background-color: var(--danger-color); 
-  color: white;
-  padding: 8px 15px;
-  font-size: 0.8rem;
-  border-radius: 4px; 
-  box-shadow: none; 
-  text-transform: none;
-  letter-spacing: normal;
-  display: inline-flex;
-}
-.check-out-btn:hover {
-  background-color: #c0392b;
-}
-
-/* Disabled/Completed State for Check Out */
-.checked-out-row .check-out-btn {
-  background-color: #bdc3c7; 
-  color: #7f8c8d;
-  cursor: default;
-  box-shadow: none;
-  transform: none;
-}
-
-/* --- LOG TABLE --- */
-.table-responsive {
-    overflow-x: auto;
-}
-
-#visitor-log-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-#visitor-log-table th,
-#visitor-log-table td {
-  padding: 12px;
-  text-align: left;
-  font-size: 0.88em;
-  border-bottom: 1px solid var(--border-color);
-}
-
-#visitor-log-table th {
-  background-color: #f0f3f5;
-  color: var(--text-dark);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.checked-out-row td {
-  background-color: #fafbfb;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
-
-/* --- CONTACT BUTTONS (HELP & SUPPORT) --- */
-.contact-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.contact-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  color: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-  border: none;
-  font-weight: 600;
-  text-align: left;
-}
-
-/* Specific colors for clarity */
-.concierge-btn {
-  background-color: var(--concierge-color);
-}
-
-.support-btn {
-  background-color: var(--support-color);
-}
-
-.contact-btn:hover {
-  transform: translateY(-3px); 
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-}
-
-.contact-btn i {
-    font-size: 2.2em; 
-    margin-bottom: 12px;
-    color: white; 
-    align-self: flex-start;
-}
-
-.contact-btn strong {
-    font-size: 1.2rem; 
-    margin-bottom: 5px;
-    font-weight: 700;
-}
-
-.sub-text {
-  font-size: 0.85em; 
-  font-weight: 400;
-  opacity: 0.9;
-  line-height: 1.3;
-}
-
-/* --- PARKING PASS LIST --- */
+/* -------------------- PARKING PASS LIST -------------------- */
 .pass-list {
     list-style: none;
     padding: 0;
@@ -456,7 +460,7 @@ input:focus, select:focus, textarea:focus {
   border-radius: 6px;
 }
 
-/* --- MODAL STYLES --- */
+/* -------------------- MODAL STYLES (RE-ADDED) -------------------- */
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -539,9 +543,6 @@ input:focus, select:focus, textarea:focus {
 #concierge-email-form .form-group {
     width: 100%;
 }
-#concierge-email-form .full-width {
-    width: 100%;
-}
 
 /* Call/Link Button Styling inside modal */
 .call-btn, .documentation-btn, .support-email-btn {
@@ -593,7 +594,7 @@ hr {
     border-top: 1px solid var(--border-color);
 }
 
-/* --- RESPONSIVE ADJUSTMENTS --- */
+/* -------------------- RESPONSIVE ADJUSTMENTS -------------------- */
 @media (max-width: 768px) {
   .container {
       margin: 20px auto;
