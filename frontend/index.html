@@ -4,11 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CarparkApp</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-   <div class="container">
-  <h1>Apollo Residence Visitor Management</h1>
+
+
+    <!-- MAIN -->
+
+
+<div class="container">
+  <h1><i class="fas fa-building"></i> Wingstar Apartments Visitor Management</h1>
+  
+  <div class="card notice">
+    <h2>Welcome to Wingstar Apartments!</h2>
+    <p>Please register using the digital visitor pass form below and register your vehicle in the Guest Passes tab to avoid issues.</p>
+    <p class="towing-info">
+      <i class="fas fa-exclamation-triangle"></i> Towing Notice: Unregistered vehicles may be towed. <br>
+      Towing Company Contact: [Insert Towing Company Name] at (555) 555-TOWS.<br>
+      *We are not liable for towed vehicles.*
+    </p>
+  </div>
 
   <div class="tabs">
     <div class="tab-header">
@@ -18,85 +35,94 @@
     </div>
 
     <div id="log" class="tab-content active">
-      <h2>Check-In / Check-Out</h2>
-      <form id="visitor-form" class="form-grid">
-        <div class="form-group">
-          <label for="visitorName"><i class="fas fa-user"></i> Visitor Name:</label>
-          <input type="text" id="visitorName" placeholder="John Doe" required>
-        </div>
-        <div class="form-group">
-          <label for="unitName"><i class="fas fa-home"></i> Unit / Resident Name:</label>
-          <input type="text" id="unitName" placeholder="Unit 402 / Jane Smith" required>
-        </div>
-        <div class="form-group">
-          <label for="visitorType"><i class="fas fa-list-alt"></i> Visitor Type:</label>
-          <select id="visitorType" required>
-            <option value="">Select Type</option>
-            <option value="Guest">Resident Guest</option>
-            <option value="Delivery">Delivery / Service</option>
-            <option value="Contractor">Contractor</option>
-            <option value="Move-In/Out">Move-In / Out</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="guestPass"><i class="fas fa-ticket-alt"></i> Guest Pass # (Optional):</label>
-          <input type="text" id="guestPass" placeholder="e.g., GP-101">
-        </div>
-        
-        <div class="form-group full-width">
-          <label for="notes"><i class="fas fa-pencil-alt"></i> Notes:</label>
-          <textarea id="notes" rows="2" placeholder="Any special instructions or items..."></textarea>
-        </div>
+      <div class="card">
+        <h2>Check-In / Check-Out</h2>
+        <form id="visitor-form" class="form-grid">
+          <div class="form-group">
+            <label for="visitorName"><i class="fas fa-user"></i> Visitor Name:</label>
+            <input type="text" id="visitorName" placeholder="John Doe" required>
+          </div>
+          <div class="form-group">
+            <label for="unitName"><i class="fas fa-home"></i> Unit / Resident Name:</label>
+            <input type="text" id="unitName" placeholder="Unit 402 / Jane Smith" required>
+          </div>
+          <div class="form-group">
+            <label for="visitorType"><i class="fas fa-list-alt"></i> Visitor Type:</label>
+            <select id="visitorType" required>
+              <option value="">Select Type</option>
+              <option value="Guest">Resident Guest</option>
+              <option value="Delivery">Delivery / Service</option>
+              <option value="Contractor">Contractor</option>
+              <option value="Move-In/Out">Move-In / Out</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="guestPass"><i class="fas fa-ticket-alt"></i> Guest Pass # (Optional):</label>
+            <input type="text" id="guestPass" placeholder="e.g., GP-101">
+          </div>
+          
+          <div class="form-group full-width">
+            <label for="notes"><i class="fas fa-pencil-alt"></i> Notes:</label>
+            <textarea id="notes" rows="2" placeholder="Any special instructions or items..."></textarea>
+          </div>
 
-        <button type="submit" class="check-in-btn full-width"><i class="fas fa-sign-in-alt"></i> Check In Visitor</button>
-      </form>
+          <button type="submit" class="check-in-btn full-width"><i class="fas fa-sign-in-alt"></i> Check In Visitor</button>
+        </form>
+      </div>
 
-      <div class="log-section">
+      <div class="card log-section">
         <h3>Current & Past Visitors Log</h3>
-        <table id="visitor-log-table">
-          <thead>
-            <tr>
-              <th>Visitor</th>
-              <th>Resident</th>
-              <th>Type</th>
-              <th>Check-In</th>
-              <th>Check-Out</th>
-              <th>Passes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="visitor-log-body">
-            </tbody>
-        </table>
+        <div class="table-responsive">
+          <table id="visitor-log-table">
+            <thead>
+              <tr>
+                <th>Visitor</th>
+                <th>Resident</th>
+                <th>Type</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+                <th>Passes</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="visitor-log-body">
+              </tbody>
+          </table>
+        </div>
         <p id="no-visitors" style="text-align: center; margin-top: 20px;">No visitors currently checked in.</p>
       </div>
     </div>
 
     <div id="passes" class="tab-content">
-      <h2>Digital Parking Guest Pass</h2>
-      <p class="description">Register your visitor's vehicle to generate a digital parking pass.</p>
-      
-      <form id="parking-form" class="form-grid">
-        <div class="form-group">
-          <label for="plate"><i class="fas fa-car"></i> Vehicle Plate Number:</label>
-          <input type="text" id="plate" placeholder="ABC-123" required>
-        </div>
-        <div class="form-group">
-          <label for="makeModel"><i class="fas fa-truck-monster"></i> Model / Color:</label>
-          <input type="text" id="makeModel" placeholder="Honda Civic - Grey" required>
-        </div>
-        <div class="form-group">
-          <label for="passUnit"><i class="fas fa-house-user"></i> Unit Visiting:</label>
-          <input type="text" id="passUnit" placeholder="Unit 402" required>
-        </div>
-        <div class="form-group">
-          <label for="passDuration"><i class="fas fa-clock"></i> Duration (Hours):</label>
-          <input type="number" id="passDuration" value="4" min="1" max="24" required>
-        </div>
-        <button type="submit" class="pass-btn full-width"><i class="fas fa-hand-pointer"></i> Request Digital Parking Pass</button>
-      </form>
+      <div class="card">
+        <h2>Digital Parking Guest Pass</h2>
+        <p class="description">Register your visitor's vehicle to generate a digital parking pass.</p>
+        
+        <form id="parking-form" class="form-grid">
+          <div class="form-group">
+            <label for="plate"><i class="fas fa-car"></i> Vehicle Plate Number:</label>
+            <input type="text" id="plate" placeholder="ABC-123" required>
+          </div>
+          <div class="form-group">
+            <label for="makeModel"><i class="fas fa-truck-monster"></i> Model / Color:</label>
+            <input type="text" id="makeModel" placeholder="Honda Civic - Grey" required>
+          </div>
+          <div class="form-group">
+            <label for="passUnit"><i class="fas fa-house-user"></i> Unit Visiting:</label>
+            <input type="text" id="passUnit" placeholder="Unit 402" required>
+          </div>
+          <div class="form-group">
+            <label for="passDuration"><i class="fas fa-clock"></i> Duration (Hours):</label>
+            <input type="number" id="passDuration" value="4" min="1" max="24" required>
+          </div>
+          <button type="submit" class="pass-btn full-width"><i class="fas fa-hand-pointer"></i> Request Digital Parking Pass</button>
+        </form>
+      </div>
 
-      <div id="parking-log" class="log-section" style="margin-top: 30px;">
+      <div id="pass-preview-section" class="card pass-preview hidden-preview">
+        </div>
+      
+      <div id="parking-log" class="card log-section">
         <h3>Active Digital Passes</h3>
         <ul id="active-passes-list" class="pass-list">
           </ul>
@@ -105,24 +131,32 @@
     </div>
     
     <div id="help" class="tab-content">
-      <h2>Need Assistance?</h2>
-      <p class="description">Quickly reach out to building staff or technical support.</p>
+      <div class="card">
+        <h2>Need Assistance?</h2>
+        <p class="description">Quickly reach out to building staff or technical support.</p>
 
-      <div class="contact-buttons">
-        <button class="contact-btn concierge-btn" onclick="alert('Simulating contact with Concierge... Please call (555) 123-4567.')">
-          <i class="fas fa-phone-alt"></i> Contact Concierge
-          <span class="sub-text">For general inquiries & resident matters</span>
-        </button>
-        <button class="contact-btn support-btn" onclick="alert('Simulating contact with Tech Support... Please email support@apollo.com.')">
-          <i class="fas fa-headset"></i> Contact App Support
-          <span class="sub-text">For technical issues with the system</span>
-        </button>
+        <div class="contact-buttons">
+          <button class="contact-btn concierge-btn" onclick="openModal('concierge-modal')">
+            <i class="fas fa-phone-alt"></i> <strong>Contact Concierge</strong>
+            <span class="sub-text">For general inquiries & resident matters</span>
+          </button>
+          <button class="contact-btn support-btn" onclick="openModal('app-support-modal')">
+            <i class="fas fa-headset"></i> <strong>Contact App Support</strong>
+            <span class="sub-text">For technical issues with the system</span>
+          </button>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
-    
+
+
+
+<!-- END MAIN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
