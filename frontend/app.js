@@ -1,9 +1,13 @@
 // frontend/app.js (The main client-side logic, communicating with Express backend)
 document.addEventListener('DOMContentLoaded', () => {
+    // DOM Element References
     const activeLog = document.getElementById('active-passes-list'); // UL element for passes
-    const loadingMessage = document.getElementById('loading-message'); // Note: This ID is not in the HTML provided, but is kept for robust future use.
     const parkingForm = document.getElementById('parking-form');
     const passPreviewEl = document.getElementById('pass-preview-section');
+    const visitorForm = document.getElementById('visitor-form'); // NEW
+    const visitorLogBody = document.getElementById('visitor-log-body'); // NEW
+    const noVisitorsMessage = document.getElementById('no-visitors'); // NEW
+    const noPassesMessage = document.getElementById('no-passes');
     
     // Set the base URL to match your Express server
     const apiBaseUrl = 'http://localhost:3000'; 
@@ -15,8 +19,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function formatTime(isoString) {
         const date = new Date(isoString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
+        // Format for log tables (Date, then Time)
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
             minute: '2-digit',
             hour12: true
         });
@@ -35,12 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
      * Renders a full digital parking pass preview.
      */
     function renderPassPreview(passData) {
-        clearPassPreview(); // Clear existing
+        clearPassPreview();
         
-        const expiryDisplay = formatTime(passData.expires);
+        // Pass data now has an 'expires' property from the server
+        const expiryDisplay = formatTime(passData.expires); 
         const html = `
             <div class="pass-preview-header">
-                <h4>Wingstar Guest Parking Pass</h4>
+                <h4>CarparkApp Guest Parking Pass</h4>
                 <i class="fas fa-ticket-alt"></i>
             </div>
             <div class="pass-detail-grid">
@@ -76,59 +84,52 @@ document.addEventListener('DOMContentLoaded', () => {
         passPreviewEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    // --- 1. Fetch Data from Express API (GET) ---
+    // --- Parking Pass Logic (Data Fetch & Submission) ---
+
     async function fetchParkingData() {
         activeLog.innerHTML = '';
-        // If you add the loading message element later, uncomment this:
-        // loadingMessage.style.display = 'block';
+        noPassesMessage.textContent = 'Loading active passes...';
 
         try {
-            // Fetch data from the Express backend route
             const response = await fetch(`${apiBaseUrl}/api/parking/log`);
             if (!response.ok) {
-                throw new Error('Server responded with an error or API route is down.');
+                throw new Error('Server responded with an error.');
             }
             const data = await response.json();
             renderLog(data);
         } catch (error) {
             console.error('Error fetching parking data:', error);
-            document.getElementById('no-passes').textContent = `Failed to load passes. Server Error: ${error.message}`;
-        } finally {
-            // loadingMessage.style.display = 'none';
+            noPassesMessage.textContent = `Failed to load passes. Server Error: ${error.message}`;
         }
     }
 
-    // --- 2. Post Data to Express API (POST) ---
     async function handlePassSubmission(e) {
         e.preventDefault();
         
         const plate = document.getElementById('plate').value.toUpperCase();
         const unit = document.getElementById('passUnit').value.trim();
-        // NOTE: The server currently hardcodes 4 hours, so duration is ignored in the POST payload below.
+        const duration = document.getElementById('passDuration').value; // NEW: Get duration
         
-        if (!plate || !unit) {
-            alert('Please enter both plate number and unit visited.');
+        if (!plate || !unit || !duration) {
+            alert('Please enter plate number, unit visited, and duration.');
             return;
         }
 
         try {
-            // Send only the required data (plate and unit) to the server
+            // Send plate, unit, AND duration to the server
             const response = await fetch(`${apiBaseUrl}/api/parking/pass`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ plate, unit })
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plate, unit, duration: duration }) 
             });
 
             const result = await response.json();
             
             if (response.ok) {
-                alert(`SUCCESS! Pass generated for plate ${result.pass.plate}.`);
+                alert(`SUCCESS! Pass generated for plate ${result.pass.plate}. Expires: ${formatTime(result.pass.expires)}`);
                 parkingForm.reset();
                 
-                // Refresh the log and show the preview
-                fetchParkingData(); 
+                fetchParkingData(); // Refresh the log
                 renderPassPreview(result.pass);
             } else {
                 alert(`ERROR: Could not generate pass. Server message: ${result.error || result.message}`);
@@ -140,10 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 3. Rendering Function ---
     function renderLog(data) {
         activeLog.innerHTML = '';
-        const noPassesMessage = document.getElementById('no-passes');
 
         if (data.length === 0) {
             noPassesMessage.style.display = 'block';
@@ -154,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         data.forEach(pass => {
-            const expiryDate = new Date(pass.expires);
             const formattedTime = formatTime(pass.expires);
             
             const listItem = document.createElement('li');
@@ -166,6 +164,144 @@ document.addEventListener('DOMContentLoaded', () => {
             activeLog.appendChild(listItem);
         });
     }
+    
+    // --- NEW VISITOR LOG Logic ---
+
+    /**
+     * Renders the visitor log by fetching data from the server.
+     */
+    async function fetchVisitorLog() {
+        visitorLogBody.innerHTML = '';
+        noVisitorsMessage.style.display = 'block';
+        noVisitorsMessage.textContent = 'Loading visitor log...';
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/api/visitor/log`);
+            const data = await response.json();
+            renderVisitorLog(data);
+        } catch (error) {
+            console.error('Error fetching visitor log:', error);
+            noVisitorsMessage.textContent = 'Failed to load visitor log.';
+        }
+    }
+
+    /**
+     * Renders the fetched visitor data into the table.
+     */
+    function renderVisitorLog(data) {
+        visitorLogBody.innerHTML = '';
+        
+        if (data.length === 0) {
+            noVisitorsMessage.style.display = 'block';
+            noVisitorsMessage.textContent = 'No visitors currently checked in.';
+            return;
+        }
+        
+        noVisitorsMessage.style.display = 'none';
+
+        data.forEach(visitor => {
+            const row = visitorLogBody.insertRow();
+            row.dataset.id = visitor.id;
+            
+            if (visitor.checkOutTime) {
+                row.classList.add('checked-out-row');
+            }
+            
+            row.insertCell().textContent = visitor.name;
+            row.insertCell().textContent = visitor.unit;
+            row.insertCell().textContent = visitor.type;
+            row.insertCell().textContent = formatTime(visitor.checkInTime);
+            row.insertCell().textContent = visitor.checkOutTime ? formatTime(visitor.checkOutTime) : '—';
+            
+            const passesText = visitor.guestPass || '—';
+            row.insertCell().textContent = passesText;
+
+            const actionCell = row.insertCell();
+            if (!visitor.checkOutTime) {
+                const checkOutBtn = document.createElement('button');
+                checkOutBtn.className = 'check-out-btn';
+                checkOutBtn.textContent = 'Check Out';
+                // Attach event listener for check out
+                checkOutBtn.addEventListener('click', () => handleVisitorCheckOut(visitor.id)); 
+                actionCell.appendChild(checkOutBtn);
+            } else {
+                actionCell.textContent = 'Completed';
+            }
+        });
+    }
+
+    /**
+     * Handles the Visitor Check-In form submission (POST).
+     */
+    async function handleVisitorCheckIn(e) {
+        e.preventDefault();
+
+        const newVisitorData = {
+            name: document.getElementById('visitorName').value,
+            unit: document.getElementById('unitName').value,
+            type: document.getElementById('visitorType').value,
+            guestPass: document.getElementById('guestPass').value.trim(),
+            notes: document.getElementById('notes').value.trim(),
+        };
+
+        try {
+            const response = await fetch(`${apiBaseUrl}/api/visitor/checkin`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newVisitorData)
+            });
+            
+            const result = await response.json();
+            if (response.ok) {
+                alert(`Visitor ${result.visitor.name} checked in successfully!`);
+                visitorForm.reset();
+                fetchVisitorLog(); // Refresh log
+            } else {
+                alert(`Check-In Error: ${result.error || 'Check server console.'}`);
+            }
+        } catch (error) {
+            console.error('Check-In network error:', error);
+            alert('A network error occurred during check-in.');
+        }
+    }
+
+    /**
+     * Handles the Visitor Check-Out action (PATCH).
+     */
+    async function handleVisitorCheckOut(id) {
+        if (!confirm("Are you sure you want to check out this visitor?")) return;
+        
+        try {
+            const response = await fetch(`${apiBaseUrl}/api/visitor/checkout/${id}`, {
+                method: 'PATCH',
+            });
+            
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                fetchVisitorLog(); // Refresh log
+            } else {
+                alert(`Check-Out Error: ${result.message}`);
+            }
+        } catch (error) {
+            console.error('Check-Out network error:', error);
+            alert('A network error occurred during check-out.');
+        }
+    }
+    
+    // --- LIVE UPDATES (Polling) ---
+
+    function startPolling() {
+        // Poll every 15 seconds to keep the pass log fresh
+        setInterval(() => {
+            const passesTab = document.querySelector('.tab-button[data-tab="passes"]');
+            if (passesTab && passesTab.classList.contains('active')) {
+                fetchParkingData();
+                // console.log('[POLL] Refreshed parking log data.');
+            }
+        }, 15000); 
+    }
+
 
     // --- Event Handlers (Tab Switching & Modals) ---
 
@@ -181,9 +317,13 @@ document.addEventListener('DOMContentLoaded', () => {
         button.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
-        // Refresh parking data when switching to the 'passes' tab
+        // Refresh data based on the tab
         if (tabId === 'passes') {
             fetchParkingData(); 
+            clearPassPreview();
+        } else if (tabId === 'log') { // NEW
+            fetchVisitorLog();
+            clearPassPreview();
         } else {
             clearPassPreview();
         }
@@ -213,12 +353,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bind Form Submissions
     parkingForm.addEventListener('submit', handlePassSubmission);
+    visitorForm.addEventListener('submit', handleVisitorCheckIn); // NEW BINDING
     document.getElementById('concierge-email-form').addEventListener('submit', handleConciergeEmail);
 
-    // Initial load: Fetch passes (if passes tab is the default active one)
-    if (document.querySelector('.tab-button[data-tab="passes"]').classList.contains('active')) {
+    // Initial load: Determine which tab is active and load data
+    const defaultTabId = document.querySelector('.tab-button.active')?.getAttribute('data-tab');
+    if (defaultTabId === 'passes') {
          fetchParkingData();
+    } else if (defaultTabId === 'log') {
+        fetchVisitorLog(); 
     }
+    
+    startPolling(); // Start the live update
 });
-
-// Since the server-side handles the expiry cron job, we simplify the client-side passes logic significantly.
