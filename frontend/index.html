@@ -3,180 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarparkApp - Management System</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>🚗 CarparkApp | Unified Access & Parking Management</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    
-    <div class="container" id="management-view">
-        <header>
-            <h1>Carpark Access Management System</h1>
-            <button id="portal-link" class="action-link"><i class="fas fa-search"></i> Go to Digital Pass Lookup</button>
-        </header>
 
-        <div class="tab-navigation">
-            <button class="tab-button active" data-target="passes">Parking Passes</button>
-            <button class="tab-button" data-target="visitor-log-tab">Visitor Log</button>
-            <button class="tab-button" data-target="violations">Towing & Violations</button>
+    <header>
+        <h1>🚗 CarparkApp Management System</h1>
+        <div id="auth-controls">
+            <span id="user-info-display"></span>
+            <button id="logout-btn" style="display:none;">Logout</button>
         </div>
+    </header>
 
-        <div id="passes" class="tab-content active">
-            <h2>Guest Parking Pass Manager</h2>
+    <div id="main-dashboard" class="view-container">
+
+        <nav class="tabs-nav">
+            <button class="tab-button active" data-tab="parking-passes-tab">Parking Passes 🎫</button>
+            <button class="tab-button" data-tab="visitor-log-tab">Visitor Log 📋</button>
+            <button class="tab-button" data-tab="towing-violations-tab">Towing & Violations 🚨</button>
+            <button class="tab-button" data-tab="resident-management-tab">Resident Management 🏠</button>
             
-            <div class="grid-layout">
-                <div class="card form-card">
-                    <h3>Generate New Pass</h3>
+            <button class="tab-button manager-only" data-tab="system-log-tab">System Log 📝</button>
+            <button class="tab-button manager-only" data-tab="user-management-tab">User Management 🔑</button>
+        </nav>
+
+        <main class="tabs-content">
+
+            <section id="parking-passes-tab" class="tab-content">
+                <h2>🎫 Digital Parking Pass Management</h2>
+                <div class="card">
                     <form id="pass-form">
-                        <label for="pass-plate">Vehicle Plate Number</label>
-                        <input type="text" id="pass-plate" required maxlength="10">
-
-                        <label for="pass-unit">Unit Visting</label>
-                        <input type="text" id="pass-unit" required maxlength="5">
-
-                        <label for="pass-duration">Duration (Hours)</label>
-                        <input type="number" id="pass-duration" value="4" min="1" max="24" required>
-
-                        <button type="submit" class="primary-btn"><i class="fas fa-check-circle"></i> GENERATE PASS</button>
-                    </form>
-
-                    <div id="pass-preview-section" class="hidden-preview">
-                        <h3>PASS GENERATED SUCCESSFULLY!</h3>
-                        <p>Plate: <strong id="preview-plate"></strong></p>
-                        <p>Unit: <strong id="preview-unit"></strong></p>
-                        <p>Expires: <strong id="preview-expires"></strong></p>
-                    </div>
-                </div>
-
-                <div class="card log-card">
-                    <h3>Active Digital Passes</h3>
-                    <p id="no-passes-message" class="info-message">Loading active passes...</p>
-                    <ul id="active-passes-list">
-                        </ul>
-                </div>
-            </div>
-        </div>
-
-        <div id="visitor-log-tab" class="tab-content">
-            <h2>Visitor Check-In/Check-Out</h2>
-
-            <div class="grid-layout">
-                <div class="card form-card">
-                    <h3>Visitor Check-In</h3>
-                    <form id="visitor-form">
-                        <label for="visitor-name">Visitor/Contractor Name</label>
-                        <input type="text" id="visitor-name" required>
-
-                        <label for="visitor-unit">Unit Being Visited</label>
-                        <input type="text" id="visitor-unit" required maxlength="5">
-                        
-                        <label for="visitor-type">Visitor Type</label>
-                        <select id="visitor-type" required>
-                            <option value="Guest">Guest</option>
-                            <option value="Contractor">Contractor</option>
-                            <option value="Delivery">Delivery/Service</option>
-                        </select>
-
-                        <label for="visitor-pass">Associated Guest Pass ID (Optional)</label>
-                        <input type="text" id="visitor-pass">
-
-                        <label for="visitor-notes">Notes</label>
-                        <textarea id="visitor-notes" rows="3"></textarea>
-
-                        <button type="submit" class="primary-btn"><i class="fas fa-sign-in-alt"></i> CHECK IN</button>
+                        <div class="form-group"><label for="pass-plate">License Plate:</label><input type="text" id="pass-plate" required placeholder="XYZ 123"></div>
+                        <div class="form-group"><label for="pass-unit">Unit Number:</label><input type="text" id="pass-unit" required placeholder="Apt 101"></div>
+                        <div class="form-group"><label for="pass-duration">Duration (Hours):</label><input type="number" id="pass-duration" value="24" required></div>
+                        <button type="submit" class="btn primary-btn">Generate Pass</button>
                     </form>
                 </div>
+                <h3>Active Passes</h3>
+                <table id="active-passes-table" class="data-table">
+                    <thead><tr><th>Plate</th><th>Unit</th><th>Expires</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
 
-                <div class="card log-card">
-                    <h3>Recent Check-Ins</h3>
-                    <div class="visitor-log-container">
-                        <table class="visitor-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Unit</th>
-                                    <th>Type</th>
-                                    <th>Check-In</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="visitor-log-body">
-                                </tbody>
-                        </table>
-                    </div>
+            <section id="visitor-log-tab" class="tab-content" style="display:none;">
+                <h2>📋 Visitor Check-In/Check-Out</h2>
+                <div class="card">
+                    <form id="checkin-form">
+                        <div class="form-group"><label for="visitor-name">Visitor Name:</label><input type="text" id="visitor-name" required></div>
+                        <div class="form-group"><label for="visitor-unit">Resident Unit:</label><input type="text" id="visitor-unit" required></div>
+                        <div class="form-group"><label for="visitor-type">Visitor Type:</label>
+                            <select id="visitor-type">
+                                <option value="Guest">Guest</option>
+                                <option value="Delivery">Delivery/Service</option>
+                                <option value="Contractor">Contractor/Repair</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn primary-btn">Check In</button>
+                    </form>
                 </div>
-            </div>
-        </div>
+                <h3>Current Visitors</h3>
+                <table id="current-visitors-table" class="data-table">
+                    <thead><tr><th>Name</th><th>Unit</th><th>Check-In</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
 
-        <div id="violations" class="tab-content">
-            <h2>Towing & Violation Management</h2>
-            
-            <div class="liability-warning">
-                <i class="fas fa-exclamation-triangle"></i> 
-                <strong>TOWING LIABILITY WARNING:</strong> Management is **NOT** liable for unregistered vehicles or for any damages resulting from a towed or booted vehicle. All enforcement actions taken via this interface must adhere strictly to documented community policies.
-            </div>
-
-            <div class="grid-layout">
-                <div class="card form-card">
-                    <h3>Record New Violation/Towing Action</h3>
+            <section id="towing-violations-tab" class="tab-content" style="display:none;">
+                <h2>🚨 Enforcement & Violation Logging</h2>
+                <p class="warning-message">**Liability Warning:** Ensure all actions comply with property policy before logging an enforcement event.</p>
+                <div class="card">
                     <form id="violation-form">
-                        <label for="violation-plate">Vehicle Plate Number</label>
-                        <input type="text" id="violation-plate" required maxlength="10">
-
-                        <label for="violation-reason">Violation Reason</label>
-                        <input type="text" id="violation-reason" required placeholder="Expired Pass, Fire Lane, Resident Spot">
-                        
-                        <label for="violation-action">Action Taken</label>
-                        <select id="violation-action" required>
-                            <option value="Towed">Towed (High Severity)</option>
-                            <option value="Booted">Booted</option>
-                            <option value="Warning">Warning Issued</option>
-                        </select>
-
-                        <label for="violation-notes">Detailed Notes</label>
-                        <textarea id="violation-notes" rows="4"></textarea>
-
-                        <button type="submit" class="danger-btn"><i class="fas fa-car-crash"></i> RECORD VIOLATION</button>
+                        <div class="form-group"><label for="violation-plate">License Plate:</label><input type="text" id="violation-plate" required placeholder="ABC 789"></div>
+                        <div class="form-group"><label for="violation-type">Violation Type:</label>
+                            <select id="violation-type">
+                                <option value="Warning">Warning</option>
+                                <option value="Booted">Booted</option>
+                                <option value="Towed">Towed</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label for="violation-notes">Notes:</label><input type="text" id="violation-notes" placeholder="No parking permit"></div>
+                        <button type="submit" class="btn danger-btn">Log Violation</button>
                     </form>
                 </div>
+                <h3>Plate History Search</h3>
+                <input type="text" id="plate-search-input" placeholder="Search license plate history">
+                <div id="search-results" class="data-display"></div>
+            </section>
 
-                <div class="card log-card">
-                    <h3>Search Plate History</h3>
-                    <form id="plate-search-form">
-                        <label for="search-plate">Search Plate Number</label>
-                        <input type="text" id="search-plate" required maxlength="10">
-                        <button type="submit" id="search-plate-btn" class="secondary-btn"><i class="fas fa-history"></i> SEARCH HISTORY</button>
+            <section id="resident-management-tab" class="tab-content" style="display:none;">
+                <h2>🏠 Resident Management</h2>
+                <p>Centralized system to manage resident units, primary vehicles, and contact information.</p>
+                <div class="card">
+                    <h3>Add/Update Resident</h3>
+                    <form id="resident-form">
+                        <div class="form-group"><label for="res-unit">Unit Number:</label><input type="text" id="res-unit" required placeholder="Apt 101"></div>
+                        <div class="form-group"><label for="res-name">Primary Contact:</label><input type="text" id="res-name" required></div>
+                        <div class="form-group"><label for="res-phone">Phone (Optional):</label><input type="text" id="res-phone" placeholder="(555) 555-1234"></div>
+                        <div class="form-group"><label for="res-plate">Primary Plate (Optional):</label><input type="text" id="res-plate" placeholder="XYZ 789"></div>
+                        <button type="submit" class="btn primary-btn">Save Resident</button>
                     </form>
-
-                    <div id="plate-history-results">
-                        <p class="info-message">Enter a plate number above to check for past violations.</p>
-                        <ul id="violation-history-list">
-                            </ul>
-                    </div>
                 </div>
-            </div>
-        </div>
+                <h3>Active Residents</h3>
+                <table id="active-residents-table" class="data-table">
+                    <thead><tr><th>Unit</th><th>Contact</th><th>Phone</th><th>Primary Plate</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
 
-    </div>
+            <section id="system-log-tab" class="tab-content manager-feature" style="display:none;">
+                <h2>📝 System Activity Log</h2>
+                <p>Displays all critical actions (Pass Creation, Violations, User Login) for accountability.</p>
+                <table id="activity-log-table" class="data-table">
+                    <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Details</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
 
-    <div class="portal-container" id="digital-portal" style="display: none;">
-        <header>
-            <h1 class="portal-title">Guest Pass Verification Portal</h1>
-            <button id="management-link" class="action-link"><i class="fas fa-cog"></i> Back to Management</button>
-        </header>
+            <section id="user-management-tab" class="tab-content manager-feature" style="display:none;">
+                <h2>🔑 User Management</h2>
+                <p>Create, edit, or disable Guard and Manager accounts.</p>
+                <div class="card">
+                    <form id="user-form">
+                        <div class="form-group"><label for="new-username">Username:</label><input type="text" id="new-username" required></div>
+                        <div class="form-group"><label for="new-password">Password:</label><input type="password" id="new-password" required></div>
+                        <div class="form-group"><label for="new-role">Role:</label>
+                            <select id="new-role">
+                                <option value="Guard">Guard</option>
+                                <option value="Manager">Manager</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn secondary-btn">Create/Update User</button>
+                    </form>
+                </div>
+                <h3>Current Staff Accounts</h3>
+                <table id="user-accounts-table" class="data-table">
+                    <thead><tr><th>User ID</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </section>
 
-        <div class="lookup-form-card">
-            <h2>Verify Your Digital Parking Pass</h2>
-            <form id="portal-lookup-form">
-                <label for="portal-plate">Enter Your Vehicle Plate Number</label>
-                <input type="text" id="portal-plate" required maxlength="10">
-                <button type="submit" class="secondary-btn portal-btn"><i class="fas fa-qrcode"></i> LOOKUP PASS</button>
-            </form>
-
-            <div id="portal-result" class="portal-result-card">
-                <p class="neutral-message">Pass status will appear here after search.</p>
-            </div>
-        </div>
+        </main>
     </div>
 
     <script src="app.js"></script>
