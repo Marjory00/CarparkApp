@@ -1,16 +1,16 @@
 
-# 🏢 CarparkApp
+#  CarparkApp
 ## Apartment Visitor Log Application (Full Stack)
 
 This project software is a **Full Stack Application** designed to replace outdated paper logbooks with a robust digital system for tracking visitors, deliveries, and contractors entering and exiting a residential or apartment complex. While the initial proof-of-concept used client-side storage, the current structure features separate **Frontend** and **Backend** components using **Node.js** to deliver a scalable solution for visitor and parking access management.
 
-### ✍️ Author
+###  Author
 
 **Marjory D. Marquez**
 
 ---
 
-### ✨ Features
+###  Features
 
 * **Visitor Check-In:** Log new visitors with essential details (Name, Resident/Unit, Type).
 * **Visitor Type Classification:** Categorize entries as Guest, Delivery/Service, or Contractor/Repair.
@@ -22,7 +22,7 @@ This project software is a **Full Stack Application** designed to replace outdat
 
 ---
 
-## 🛠️ Technology Stack: Full Stack Application
+##  Technology Stack: Full Stack Application
 
 This application is built as a **Full Stack** project, utilizing distinct **Frontend** and **Backend** components for modularity and scalability.
 
@@ -66,7 +66,7 @@ Since this initial version is purely **front-end** and relies on browser storage
 
 ---
 
-## 📈 Future Scalability & Potential Technologies
+##  Future Scalability & Potential Technologies
 
 This project is built for **scalability**. While the current version utilizes only client-side storage, the logical separation of the form and log components makes it ready to integrate with a robust back-end for production use across an entire apartment complex.
 
@@ -92,7 +92,7 @@ The scalable architecture would support advanced features, including:
 
 ---
 
-### 🚀 Getting Started
+###  Getting Started
 
 To run this application, you need the three files (`index.html`, `style.css`, `index.js`) in the same directory.
 
@@ -102,7 +102,7 @@ To run this application, you need the three files (`index.html`, `style.css`, `i
 
 ---
 
-### 💡 Case Study: Digitizing Visitor Management
+###  Case Study: Digitizing Visitor Management
 
 #### **Project: Grandview Apartment Security Upgrade**
 
