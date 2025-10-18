@@ -96,6 +96,8 @@ app.get('/api/parking/log', async (req, res) => {
         const passes = await db.all('SELECT * FROM parking_passes ORDER BY expires ASC');
         res.json(passes);
     } catch (error) {
+        // If an error occurs, forward it to the global error handler
+        console.error('Error in /api/parking/log:', error.message);
         res.status(500).json({ error: 'Failed to retrieve parking log from DB.' });
     }
 });
@@ -128,6 +130,7 @@ app.post('/api/parking/pass', async (req, res) => {
             pass: newPass
         });
     } catch (error) {
+        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to insert new pass:', error.message);
         res.status(500).json({ error: 'Failed to save pass to database.' });
     }
@@ -148,6 +151,8 @@ app.get('/api/visitor/log', async (req, res) => {
         `);
         res.json(visitors);
     } catch (error) {
+        // If an error occurs, forward it to the global error handler
+        console.error('Error in /api/visitor/log:', error.message);
         res.status(500).json({ error: 'Failed to retrieve visitor log from DB.' });
     }
 });
@@ -182,6 +187,7 @@ app.post('/api/visitor/checkin', async (req, res) => {
         res.status(201).json({ message: 'Visitor checked in.', visitor: newVisitor });
 
     } catch (error) {
+        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to insert new visitor:', error.message);
         res.status(500).json({ error: 'Failed to save visitor data to database.' });
     }
@@ -215,9 +221,27 @@ app.patch('/api/visitor/checkout/:id', async (req, res) => {
         return res.json({ message: 'Visitor checked out successfully.' });
 
     } catch (error) {
+        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to check out visitor:', error.message);
         res.status(500).json({ error: 'Failed to update database.' });
     }
+});
+
+
+// --- GLOBAL ERROR HANDLER ---
+// This is the last middleware, catching any errors that were explicitly passed 
+// via next(err) or uncaught in the synchronous code above.
+app.use((err, req, res, next) => {
+    console.error('--- Global Error Handler Caught Exception ---');
+    console.error(`Route: ${req.method} ${req.originalUrl}`);
+    console.error(err.stack);
+    console.error('-------------------------------------------');
+
+    // Send a generic 500 error response for safety
+    res.status(500).json({
+        error: 'An unexpected internal server error occurred.',
+        details: err.message
+    });
 });
 
 
@@ -231,6 +255,7 @@ async function startServer() {
             console.log(`Using SQLite database: ${DB_PATH}`);
         });
     } catch (error) {
+        // This is the final safety catch for DB initialization failure
         console.error('FATAL ERROR: Failed to start the server or initialize database:', error);
         process.exit(1);
     }
