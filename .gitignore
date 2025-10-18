@@ -1,25 +1,29 @@
-
 # Dependencies
 # Ignore the node_modules folder where npm packages are installed
 /node_modules
 
-# Logs
+# Logs and npm specific files
 # Ignore npm debug logs, which are generated in the root
 npm-debug.log
 .npm
+# npm install lock file is generally included, but can be ignored if desired
+package-lock.json
 
 # Runtime data and build artifacts
 # Ignore environment configuration files
 .env
 .DS_Store
 
-# Express/Backend specific:
+# CarparkApp Specific Exclusions
+
+# 1. Database File (Crucial to ignore runtime data)
+/backend/carpark.db
+
+# 2. Express/Backend specific:
 # If you plan to use separate logs or temporary files in the backend
 /backend/logs
 /backend/tmp
 
-# Frontend specific (if you were building it later, but good practice):
-# Although your frontend is currently static, if you introduced
-# a build process (like Webpack), you would ignore the build output folder.
+# 3. Frontend specific (common build output folders)
 /frontend/dist 
 /frontend/build

@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const activeLog = document.getElementById('active-passes-list'); // UL element for passes
     const parkingForm = document.getElementById('parking-form');
     const passPreviewEl = document.getElementById('pass-preview-section');
-    const visitorForm = document.getElementById('visitor-form'); // NEW
-    const visitorLogBody = document.getElementById('visitor-log-body'); // NEW
-    const noVisitorsMessage = document.getElementById('no-visitors'); // NEW
+    const visitorForm = document.getElementById('visitor-form'); 
+    const visitorLogBody = document.getElementById('visitor-log-body');
+    const noVisitorsMessage = document.getElementById('no-visitors');
     const noPassesMessage = document.getElementById('no-passes');
     
     // Set the base URL to match your Express server
@@ -15,11 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Utility Methods ---
 
     /**
-     * Formats an ISO string date into a user-friendly local time string.
+     * Formats an ISO string date into a user-friendly local time string, 
+     * showing month, day, and time (e.g., Oct 17, 8:25 PM).
      */
     function formatTime(isoString) {
         const date = new Date(isoString);
-        // Format for log tables (Date, then Time)
         return date.toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderPassPreview(passData) {
         clearPassPreview();
         
-        // Pass data now has an 'expires' property from the server
         const expiryDisplay = formatTime(passData.expires); 
         const html = `
             <div class="pass-preview-header">
@@ -99,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderLog(data);
         } catch (error) {
             console.error('Error fetching parking data:', error);
-            noPassesMessage.textContent = `Failed to load passes. Server Error: ${error.message}`;
+            noPassesMessage.textContent = `Failed to load passes. Server Error.`;
         }
     }
 
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const plate = document.getElementById('plate').value.toUpperCase();
         const unit = document.getElementById('passUnit').value.trim();
-        const duration = document.getElementById('passDuration').value; // NEW: Get duration
+        const duration = document.getElementById('passDuration').value; 
         
         if (!plate || !unit || !duration) {
             alert('Please enter plate number, unit visited, and duration.');
@@ -116,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Send plate, unit, AND duration to the server
             const response = await fetch(`${apiBaseUrl}/api/parking/pass`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -129,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(`SUCCESS! Pass generated for plate ${result.pass.plate}. Expires: ${formatTime(result.pass.expires)}`);
                 parkingForm.reset();
                 
-                fetchParkingData(); // Refresh the log
+                fetchParkingData(); 
                 renderPassPreview(result.pass);
             } else {
                 alert(`ERROR: Could not generate pass. Server message: ${result.error || result.message}`);
@@ -165,11 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // --- NEW VISITOR LOG Logic ---
+    // --- Visitor Log Logic ---
 
-    /**
-     * Renders the visitor log by fetching data from the server.
-     */
     async function fetchVisitorLog() {
         visitorLogBody.innerHTML = '';
         noVisitorsMessage.style.display = 'block';
@@ -185,9 +180,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Renders the fetched visitor data into the table.
-     */
     function renderVisitorLog(data) {
         visitorLogBody.innerHTML = '';
         
@@ -221,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const checkOutBtn = document.createElement('button');
                 checkOutBtn.className = 'check-out-btn';
                 checkOutBtn.textContent = 'Check Out';
-                // Attach event listener for check out
                 checkOutBtn.addEventListener('click', () => handleVisitorCheckOut(visitor.id)); 
                 actionCell.appendChild(checkOutBtn);
             } else {
@@ -230,9 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Handles the Visitor Check-In form submission (POST).
-     */
     async function handleVisitorCheckIn(e) {
         e.preventDefault();
 
@@ -255,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 alert(`Visitor ${result.visitor.name} checked in successfully!`);
                 visitorForm.reset();
-                fetchVisitorLog(); // Refresh log
+                fetchVisitorLog(); 
             } else {
                 alert(`Check-In Error: ${result.error || 'Check server console.'}`);
             }
@@ -265,9 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Handles the Visitor Check-Out action (PATCH).
-     */
     async function handleVisitorCheckOut(id) {
         if (!confirm("Are you sure you want to check out this visitor?")) return;
         
@@ -279,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             if (response.ok) {
                 alert(result.message);
-                fetchVisitorLog(); // Refresh log
+                fetchVisitorLog(); 
             } else {
                 alert(`Check-Out Error: ${result.message}`);
             }
@@ -297,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const passesTab = document.querySelector('.tab-button[data-tab="passes"]');
             if (passesTab && passesTab.classList.contains('active')) {
                 fetchParkingData();
-                // console.log('[POLL] Refreshed parking log data.');
             }
         }, 15000); 
     }
@@ -309,11 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = e.currentTarget;
         const tabId = button.getAttribute('data-tab');
         
-        // Remove active class from all buttons and content
         document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         
-        // Add active class to the clicked button and corresponding content
         button.classList.add('active');
         document.getElementById(tabId).classList.add('active');
 
@@ -321,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tabId === 'passes') {
             fetchParkingData(); 
             clearPassPreview();
-        } else if (tabId === 'log') { // NEW
+        } else if (tabId === 'log') { 
             fetchVisitorLog();
             clearPassPreview();
         } else {
@@ -353,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Bind Form Submissions
     parkingForm.addEventListener('submit', handlePassSubmission);
-    visitorForm.addEventListener('submit', handleVisitorCheckIn); // NEW BINDING
+    visitorForm.addEventListener('submit', handleVisitorCheckIn); 
     document.getElementById('concierge-email-form').addEventListener('submit', handleConciergeEmail);
 
     // Initial load: Determine which tab is active and load data
