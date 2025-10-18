@@ -13,6 +13,14 @@ This system has been upgraded from a client-side proof-of-concept to a robust, *
 
 ---
 
+## 🔒 Repository Notice
+
+**For security and proprietary reasons, core backend files (`server.js`) and the persistent database file (`carpark.db`) are intentionally omitted from this public repository via the `.gitignore` file.**
+
+The file structure overview below reflects the architecture, but these files are considered proprietary or contain sensitive configuration data.
+
+---
+
 ## 💡 Core Purpose & Features
 
 The **CarparkApp** application consolidates three critical management functions into a single, highly efficient interface:
