@@ -136,6 +136,33 @@ app.post('/api/parking/pass', async (req, res) => {
     }
 });
 
+// ⭐ NEW FEATURE: DELETE /api/parking/pass/:id - Manually revoke/delete a parking pass ⭐
+app.delete('/api/parking/pass/:id', async (req, res) => {
+    const { id } = req.params; // Get the pass ID from the URL parameter
+
+    if (!id) {
+        return res.status(400).json({ error: 'Missing pass ID.' });
+    }
+
+    try {
+        // Run the deletion query
+        const result = await db.run('DELETE FROM parking_passes WHERE id = ?', id);
+
+        if (result.changes === 0) {
+            // No rows were deleted, meaning the pass ID was not found
+            return res.status(404).json({ message: `Pass ${id} not found or already revoked.` });
+        }
+
+        console.log(`Parking Pass ${id} successfully revoked.`);
+        return res.json({ message: `Pass ${id} revoked successfully.`, revokedId: id });
+
+    } catch (error) {
+        console.error('DB ERROR: Failed to revoke pass:', error.message);
+        // Forward to global error handler
+        res.status(500).json({ error: 'Failed to revoke pass from database.' });
+    }
+});
+
 
 // --- API Routes: Visitor Log (NOW USING DB) ---
 

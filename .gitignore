@@ -23,7 +23,7 @@ package-lock.json
 # If you plan to use separate logs or temporary files in the backend
 /backend/logs
 /backend/tmp
-
+/draft.txt
 # 3. Frontend specific (common build output folders)
 /frontend/dist 
 /frontend/build
