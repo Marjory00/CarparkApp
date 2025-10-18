@@ -11,215 +11,211 @@
 <body>
 
 
-    <!-- MAIN -->
-
-
-<div class="container">
-  <h1><i class="fas fa-building"></i> Wingstar Apartments Visitor Management</h1>
-  
-  <div class="card notice">
-    <h2>Welcome to Wingstar Apartments!</h2>
-    <p>Please register using the digital visitor pass form below and register your vehicle in the Guest Passes tab to avoid issues.</p>
-    <p class="towing-info">
-      <i class="fas fa-exclamation-triangle"></i> Towing Notice: Unregistered vehicles may be towed. <br>
-      Towing Company Contact: [Insert Towing Company Name] at (555) 555-TOWS.<br>
-      *We are not liable for towed vehicles.*
-    </p>
-  </div>
-
-  <div class="tabs">
-    <div class="tab-header">
-      <button class="tab-button active" data-tab="log"><i class="fas fa-clipboard-list"></i> Visitor Log</button>
-      <button class="tab-button" data-tab="passes"><i class="fas fa-parking"></i> Guest Passes</button>
-      <button class="tab-button" data-tab="help"><i class="fas fa-life-ring"></i> Help & Support</button>
-    </div>
-
-    <div id="log" class="tab-content active">
-      <div class="card">
-        <h2>Check-In / Check-Out</h2>
-        <form id="visitor-form" class="form-grid">
-          <div class="form-group">
-            <label for="visitorName"><i class="fas fa-user"></i> Visitor Name:</label>
-            <input type="text" id="visitorName" placeholder="John Doe" required>
-          </div>
-          <div class="form-group">
-            <label for="unitName"><i class="fas fa-home"></i> Unit / Resident Name:</label>
-            <input type="text" id="unitName" placeholder="Unit 402 / Jane Smith" required>
-          </div>
-          <div class="form-group">
-            <label for="visitorType"><i class="fas fa-list-alt"></i> Visitor Type:</label>
-            <select id="visitorType" required>
-              <option value="">Select Type</option>
-              <option value="Guest">Resident Guest</option>
-              <option value="Delivery">Delivery / Service</option>
-              <option value="Contractor">Contractor</option>
-              <option value="Move-In/Out">Move-In / Out</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="guestPass"><i class="fas fa-ticket-alt"></i> Guest Pass # (Optional):</label>
-            <input type="text" id="guestPass" placeholder="e.g., GP-101">
-          </div>
-          
-          <div class="form-group full-width">
-            <label for="notes"><i class="fas fa-pencil-alt"></i> Notes:</label>
-            <textarea id="notes" rows="2" placeholder="Any special instructions or items..."></textarea>
-          </div>
-
-          <button type="submit" class="check-in-btn full-width"><i class="fas fa-sign-in-alt"></i> Check In Visitor</button>
-        </form>
-      </div>
-
-      <div class="card log-section">
-        <h3>Current & Past Visitors Log</h3>
-        <div class="table-responsive">
-          <table id="visitor-log-table">
-            <thead>
-              <tr>
-                <th>Visitor</th>
-                <th>Resident</th>
-                <th>Type</th>
-                <th>Check-In</th>
-                <th>Check-Out</th>
-                <th>Passes</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="visitor-log-body">
-              </tbody>
-          </table>
-        </div>
-        <p id="no-visitors" style="text-align: center; margin-top: 20px;">No visitors currently checked in.</p>
-      </div>
-    </div>
-
-    <div id="passes" class="tab-content">
-      <div class="card">
-        <h2>Digital Parking Guest Pass</h2>
-        <p class="description">Register your visitor's vehicle to generate a digital parking pass.</p>
-        
-        <form id="parking-form" class="form-grid">
-          <div class="form-group">
-            <label for="plate"><i class="fas fa-car"></i> Vehicle Plate Number:</label>
-            <input type="text" id="plate" placeholder="ABC-123" required>
-          </div>
-          <div class="form-group">
-            <label for="makeModel"><i class="fas fa-truck-monster"></i> Model / Color:</label>
-            <input type="text" id="makeModel" placeholder="Honda Civic - Grey" required>
-          </div>
-          <div class="form-group">
-            <label for="passUnit"><i class="fas fa-house-user"></i> Unit Visiting:</label>
-            <input type="text" id="passUnit" placeholder="Unit 402" required>
-          </div>
-          <div class="form-group">
-            <label for="passDuration"><i class="fas fa-clock"></i> Duration (Hours):</label>
-            <input type="number" id="passDuration" value="4" min="1" max="24" required>
-          </div>
-          <button type="submit" class="pass-btn full-width"><i class="fas fa-hand-pointer"></i> Request Digital Parking Pass</button>
-        </form>
-      </div>
-
-      <div id="pass-preview-section" class="card pass-preview hidden-preview">
-        </div>
-      
-      <div id="parking-log" class="card log-section">
-        <h3>Active Digital Passes</h3>
-        <ul id="active-passes-list" class="pass-list">
-          </ul>
-        <p id="no-passes" style="text-align: center; margin-top: 20px;">No active digital passes.</p>
-      </div>
-    </div>
+    <div class="container">
+    <h1><i class="fas fa-building"></i> Wingstar Apartments Visitor Management</h1>
     
-    <div id="help" class="tab-content">
-      <div class="card">
-        <h2>Need Assistance?</h2>
-        <p class="description">Quickly reach out to building staff or technical support.</p>
-
-        <div class="contact-buttons">
-          <button class="contact-btn concierge-btn" onclick="openModal('concierge-modal')">
-            <i class="fas fa-phone-alt"></i> <strong>Contact Concierge</strong>
-            <span class="sub-text">For general inquiries & resident matters</span>
-          </button>
-          <button class="contact-btn support-btn" onclick="openModal('app-support-modal')">
-            <i class="fas fa-headset"></i> <strong>Contact App Support</strong>
-            <span class="sub-text">For technical issues with the system</span>
-          </button>
-        </div>
-      </div>
+    <div class="card notice">
+        <h2>Welcome to Wingstar Apartments!</h2>
+        <p>Please register using the digital visitor pass form below and register your vehicle in the Guest Passes tab to avoid issues.</p>
+        <p class="towing-info">
+            <i class="fas fa-exclamation-triangle"></i> Towing Notice: Unregistered vehicles may be towed. <br>
+            Towing Company Contact: [Insert Towing Company Name] at (555) 555-TOWS.<br>
+            *We are not liable for towed vehicles.*
+        </p>
     </div>
 
-  </div>
+    <div class="tabs">
+        <div class="tab-header">
+            <button class="tab-button active" data-tab="log"><i class="fas fa-clipboard-list"></i> Visitor Log</button>
+            <button class="tab-button" data-tab="passes"><i class="fas fa-parking"></i> Guest Passes</button>
+            <button class="tab-button" data-tab="help"><i class="fas fa-life-ring"></i> Help & Support</button>
+        </div>
+
+        <div id="log" class="tab-content active">
+            <div class="card">
+                <h2>Check-In / Check-Out</h2>
+                <form id="visitor-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="visitorName"><i class="fas fa-user"></i> Visitor Name:</label>
+                        <input type="text" id="visitorName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="unitName"><i class="fas fa-home"></i> Unit / Resident Name:</label>
+                        <input type="text" id="unitName" placeholder="Unit 402 / Jane Smith" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="visitorType"><i class="fas fa-list-alt"></i> Visitor Type:</label>
+                        <select id="visitorType" required>
+                            <option value="">Select Type</option>
+                            <option value="Guest">Resident Guest</option>
+                            <option value="Delivery">Delivery / Service</option>
+                            <option value="Contractor">Contractor</option>
+                            <option value="Move-In/Out">Move-In / Out</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestPass"><i class="fas fa-ticket-alt"></i> Guest Pass # (Optional):</label>
+                        <input type="text" id="guestPass" placeholder="e.g., GP-101">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label for="notes"><i class="fas fa-pencil-alt"></i> Notes:</label>
+                        <textarea id="notes" rows="2" placeholder="Any special instructions or items..."></textarea>
+                    </div>
+
+                    <button type="submit" class="check-in-btn full-width"><i class="fas fa-sign-in-alt"></i> Check In Visitor</button>
+                </form>
+            </div>
+
+            <div class="card log-section">
+                <h3>Current & Past Visitors Log</h3>
+                <div class="table-responsive">
+                    <table id="visitor-log-table">
+                        <thead>
+                            <tr>
+                                <th>Visitor</th>
+                                <th>Resident</th>
+                                <th>Type</th>
+                                <th>Check-In</th>
+                                <th>Check-Out</th>
+                                <th>Passes</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="visitor-log-body">
+                            </tbody>
+                    </table>
+                </div>
+                <p id="no-visitors" style="text-align: center; margin-top: 20px;">No visitors currently checked in.</p>
+            </div>
+        </div>
+
+        <div id="passes" class="tab-content">
+            <div class="card">
+                <h2>Digital Parking Guest Pass</h2>
+                <p class="description">Register your visitor's vehicle to generate a digital parking pass.</p>
+                
+                <form id="parking-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="plate"><i class="fas fa-car"></i> Vehicle Plate Number:</label>
+                        <input type="text" id="plate" placeholder="ABC-123" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="makeModel"><i class="fas fa-truck-monster"></i> Model / Color:</label>
+                        <input type="text" id="makeModel" placeholder="Honda Civic - Grey" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passUnit"><i class="fas fa-house-user"></i> Unit Visiting:</label>
+                        <input type="text" id="passUnit" placeholder="Unit 402" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passDuration"><i class="fas fa-clock"></i> Duration (Hours):</label>
+                        <input type="number" id="passDuration" value="4" min="1" max="24" required>
+                    </div>
+                    <button type="submit" class="pass-btn full-width"><i class="fas fa-hand-pointer"></i> Request Digital Parking Pass</button>
+                </form>
+            </div>
+
+            <div id="pass-preview-section" class="card pass-preview hidden-preview">
+                </div>
+            
+            <div id="parking-log" class="card log-section">
+                <h3>Active Digital Passes</h3>
+                <ul id="active-passes-list" class="pass-list">
+                    </ul>
+                <p id="no-passes" style="text-align: center; margin-top: 20px;">No active digital passes.</p>
+            </div>
+        </div>
+        
+        <div id="help" class="tab-content">
+            <div class="card">
+                <h2>Need Assistance?</h2>
+                <p class="description">Quickly reach out to building staff or technical support.</p>
+
+                <div class="contact-buttons">
+                    <button class="contact-btn concierge-btn" onclick="openModal('concierge-modal')">
+                        <i class="fas fa-phone-alt"></i> <strong>Contact Concierge</strong>
+                        <span class="sub-text">For general inquiries & resident matters</span>
+                    </button>
+                    <button class="contact-btn support-btn" onclick="openModal('app-support-modal')">
+                        <i class="fas fa-headset"></i> <strong>Contact App Support</strong>
+                        <span class="sub-text">For technical issues with the system</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <div id="concierge-modal" class="modal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('concierge-modal')">&times;</span>
-      <h2 class="modal-title"><i class="fas fa-user-tie"></i> Contact Concierge</h2>
-      <p class="description">How would you like to reach the building staff?</p>
-  
-      <div class="contact-option phone-call">
-        <h3><i class="fas fa-phone"></i> Make a Phone Call</h3>
-        <p>This is for urgent general inquiries and immediate resident matters.</p>
-        <a href="tel:+15551234567" class="call-btn"><i class="fas fa-mobile-alt"></i> Call Now: (555) 123-4567</a>
-      </div>
-  
-      <hr>
-  
-      <div class="contact-option email-send">
-        <h3><i class="fas fa-envelope"></i> Send an Email</h3>
-        <p>For non-urgent requests or detailed documentation.</p>
-        <form id="concierge-email-form">
-          <div class="form-group">
-            <label for="modalName">Your Name / Unit:</label>
-            <input type="text" id="modalName" placeholder="Your Name or Unit Number" required>
-          </div>
-          <div class="form-group">
-            <label for="modalSubject">Subject:</label>
-            <input type="text" id="modalSubject" placeholder="e.g., Package delivery, Maintenance request" required>
-          </div>
-          <div class="form-group">
-            <label for="modalMessage">Message:</label>
-            <textarea id="modalMessage" rows="4" placeholder="Briefly describe your request..."></textarea>
-          </div>
-          <button type="submit" class="check-in-btn full-width"><i class="fas fa-paper-plane"></i> Send Message</button>
-        </form>
-      </div>
+        <span class="close-btn" onclick="closeModal('concierge-modal')">&times;</span>
+        <h2 class="modal-title"><i class="fas fa-user-tie"></i> Contact Concierge</h2>
+        <p class="description">How would you like to reach the building staff?</p>
+    
+        <div class="contact-option phone-call">
+            <h3><i class="fas fa-phone"></i> Make a Phone Call</h3>
+            <p>This is for urgent general inquiries and immediate resident matters.</p>
+            <a href="tel:+15551234567" class="call-btn"><i class="fas fa-mobile-alt"></i> Call Now: (555) 123-4567</a>
+        </div>
+    
+        <hr>
+    
+        <div class="contact-option email-send">
+            <h3><i class="fas fa-envelope"></i> Send an Email</h3>
+            <p>For non-urgent requests or detailed documentation.</p>
+            <form id="concierge-email-form">
+                <div class="form-group">
+                    <label for="modalName">Your Name / Unit:</label>
+                    <input type="text" id="modalName" placeholder="Your Name or Unit Number" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalSubject">Subject:</label>
+                    <input type="text" id="modalSubject" placeholder="e.g., Package delivery, Maintenance request" required>
+                </div>
+                <div class="form-group">
+                    <label for="modalMessage">Message:</label>
+                    <textarea id="modalMessage" rows="4" placeholder="Briefly describe your request..."></textarea>
+                </div>
+                <button type="submit" class="check-in-btn full-width"><i class="fas fa-paper-plane"></i> Send Message</button>
+            </form>
+        </div>
     </div>
-  </div>
-  
-  <div id="app-support-modal" class="modal">
+    </div>
+    
+    <div id="app-support-modal" class="modal">
     <div class="modal-content">
-      <span class="close-btn" onclick="closeModal('app-support-modal')">&times;</span>
-      <h2 class="modal-title app-support-title"><i class="fas fa-headset"></i> Contact App Support</h2>
-      <p class="description">For issues using the system, reporting bugs, or technical questions.</p>
-  
-      <div class="contact-option email-send">
-        <h3><i class="fas fa-bug"></i> Technical Support Request</h3>
-        <p>This will open your default email application to send a detailed request to our technical team.</p>
-        
-        <a href="mailto:support@apollo.com?subject=Visitor%20App%20Technical%20Issue&body=Hello%20Support%20Team%2C%0A%0AI%20am%20experiencing%20an%20issue%20with%20the%20Visitor%20Management%20App.%0A%0AProblem%20Description%3A%20%0A%0A%0AScreenshot%20Link%20(optional)%3A%20%0A%0AUnit%20%2F%20Name%3A%20" 
-           class="call-btn support-email-btn" target="_blank">
-          <i class="fas fa-envelope"></i> Email Support Directly
-        </a>
-      </div>
-  
-      <hr>
-  
-      <div class="contact-option documentation-link">
-        <h3><i class="fas fa-book"></i> Read Documentation</h3>
-        <p>Consult our help guides for troubleshooting common issues.</p>
-        <a href="#" class="call-btn documentation-btn" onclick="alert('Simulating opening documentation link...')">
-          <i class="fas fa-external-link-alt"></i> Open Help Center
-        </a>
-      </div>
+        <span class="close-btn" onclick="closeModal('app-support-modal')">&times;</span>
+        <h2 class="modal-title app-support-title"><i class="fas fa-headset"></i> Contact App Support</h2>
+        <p class="description">For issues using the system, reporting bugs, or technical questions.</p>
+    
+        <div class="contact-option email-send">
+            <h3><i class="fas fa-bug"></i> Technical Support Request</h3>
+            <p>This will open your default email application to send a detailed request to our technical team.</p>
+            
+            <a href="mailto:support@apollo.com?subject=Visitor%20App%20Technical%20Issue&body=Hello%20Support%20Team%2C%0A%0AI%20am%20experiencing%20an%20issue%20with%20the%20Visitor%20Management%20App.%0A%0AProblem%20Description%3A%20%0A%0AScreenshot%20Link%20(optional)%3A%20%0A%0AUnit%20%2F%20Name%3A%20" 
+                class="call-btn support-email-btn" target="_blank">
+                <i class="fas fa-envelope"></i> Email Support Directly
+            </a>
+        </div>
+    
+        <hr>
+    
+        <div class="contact-option documentation-link">
+            <h3><i class="fas fa-book"></i> Read Documentation</h3>
+            <p>Consult our help guides for troubleshooting common issues.</p>
+            <a href="#" class="call-btn documentation-btn" onclick="alert('Simulating opening documentation link...')">
+                <i class="fas fa-external-link-alt"></i> Open Help Center
+            </a>
+        </div>
     </div>
-  </div>
+    </div>
 
 
-<!-- END MAIN -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="index.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
