@@ -3,142 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarparkApp - Management Console</title>
+    <title>CarparkApp - Management System</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+    
+    <div class="container" id="management-view">
+        <header>
+            <h1>Carpark Access Management System</h1>
+            <button id="portal-link" class="action-link"><i class="fas fa-search"></i> Go to Digital Pass Lookup</button>
+        </header>
 
-    <div class="container">
-        <h1>CarparkApp Console</h1>
-        <p>Digital Management for Guest Parking and Visitor Access</p>
-
-        <div class="tab-buttons">
-            <button class="tab-button active" data-tab="passes">Guest Passes</button>
-            <button class="tab-button" data-tab="log">Visitor Log</button>
-            <button class="tab-button" data-tab="concierge">Concierge Services</button>
+        <div class="tab-navigation">
+            <button class="tab-button active" data-target="passes">Parking Passes</button>
+            <button class="tab-button" data-target="visitor-log-tab">Visitor Log</button>
+            <button class="tab-button" data-target="violations">Towing & Violations</button>
         </div>
 
-        <div class="tab-content active" id="passes">
-            <h2>Digital Parking Guest Pass</h2>
+        <div id="passes" class="tab-content active">
+            <h2>Guest Parking Pass Manager</h2>
             
-            <form id="parking-form" class="form-grid">
-                <div class="form-group">
-                    <label for="plate">License Plate Number:</label>
-                    <input type="text" id="plate" required maxlength="10">
-                </div>
-                <div class="form-group">
-                    <label for="passUnit">Unit Being Visited:</label>
-                    <input type="text" id="passUnit" required maxlength="5">
-                </div>
-                <div class="form-group">
-                    <label for="passDuration">Duration (Hours):</label>
-                    <select id="passDuration" required>
-                        <option value="4" selected>4 Hours (Standard)</option>
-                        <option value="8">8 Hours</option>
-                        <option value="12">12 Hours</option>
-                        <option value="24">24 Hours</option>
-                    </select>
-                </div>
-                <button type="submit" class="submit-btn full-width-btn">
-                    <i class="fas fa-car"></i> Request Digital Parking Pass
-                </button>
-            </form>
+            <div class="grid-layout">
+                <div class="card form-card">
+                    <h3>Generate New Pass</h3>
+                    <form id="pass-form">
+                        <label for="pass-plate">Vehicle Plate Number</label>
+                        <input type="text" id="pass-plate" required maxlength="10">
 
-            <div id="pass-preview-section" class="hidden-preview">
+                        <label for="pass-unit">Unit Visting</label>
+                        <input type="text" id="pass-unit" required maxlength="5">
+
+                        <label for="pass-duration">Duration (Hours)</label>
+                        <input type="number" id="pass-duration" value="4" min="1" max="24" required>
+
+                        <button type="submit" class="primary-btn"><i class="fas fa-check-circle"></i> GENERATE PASS</button>
+                    </form>
+
+                    <div id="pass-preview-section" class="hidden-preview">
+                        <h3>PASS GENERATED SUCCESSFULLY!</h3>
+                        <p>Plate: <strong id="preview-plate"></strong></p>
+                        <p>Unit: <strong id="preview-unit"></strong></p>
+                        <p>Expires: <strong id="preview-expires"></strong></p>
+                    </div>
                 </div>
 
-            <h3>Active Digital Passes</h3>
-            <p id="no-passes" class="info-message">Loading active passes...</p>
-            <ul id="active-passes-list">
-                </ul>
-        </div>
-
-        <div class="tab-content" id="log">
-            <h2>Visitor Check-In / Check-Out</h2>
-
-            <form id="visitor-form" class="form-grid">
-                <div class="form-group">
-                    <label for="visitorName">Visitor Name:</label>
-                    <input type="text" id="visitorName" required>
+                <div class="card log-card">
+                    <h3>Active Digital Passes</h3>
+                    <p id="no-passes-message" class="info-message">Loading active passes...</p>
+                    <ul id="active-passes-list">
+                        </ul>
                 </div>
-                <div class="form-group">
-                    <label for="unitName">Unit Visited:</label>
-                    <input type="text" id="unitName" required>
-                </div>
-                <div class="form-group">
-                    <label for="visitorType">Visitor Type:</label>
-                    <select id="visitorType" required>
-                        <option value="Guest">Guest</option>
-                        <option value="Contractor">Contractor/Service</option>
-                        <option value="Delivery">Delivery</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="guestPass">Related Guest Pass ID (Optional):</label>
-                    <input type="text" id="guestPass" placeholder="e.g., GP-1234">
-                </div>
-                <div class="form-group full-width-group">
-                    <label for="notes">Notes:</label>
-                    <textarea id="notes" rows="2"></textarea>
-                </div>
-                <button type="submit" class="submit-btn full-width-btn">
-                    <i class="fas fa-user-plus"></i> Check In Visitor
-                </button>
-            </form>
-
-            <h3>Current & Recent Visitor Log</h3>
-            <p id="no-visitors" class="info-message">Loading visitor log...</p>
-            
-            <div class="table-container">
-                <table class="visitor-table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Unit</th>
-                            <th>Type</th>
-                            <th>Check-In</th>
-                            <th>Check-Out</th>
-                            <th>Pass ID</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="visitor-log-body">
-                        </tbody>
-                </table>
             </div>
         </div>
 
-        <div class="tab-content" id="concierge">
-            <h2>Concierge Services</h2>
-            <p>Use this area to send administrative requests or notifications to the management team.</p>
+        <div id="visitor-log-tab" class="tab-content">
+            <h2>Visitor Check-In/Check-Out</h2>
+
+            <div class="grid-layout">
+                <div class="card form-card">
+                    <h3>Visitor Check-In</h3>
+                    <form id="visitor-form">
+                        <label for="visitor-name">Visitor/Contractor Name</label>
+                        <input type="text" id="visitor-name" required>
+
+                        <label for="visitor-unit">Unit Being Visited</label>
+                        <input type="text" id="visitor-unit" required maxlength="5">
+                        
+                        <label for="visitor-type">Visitor Type</label>
+                        <select id="visitor-type" required>
+                            <option value="Guest">Guest</option>
+                            <option value="Contractor">Contractor</option>
+                            <option value="Delivery">Delivery/Service</option>
+                        </select>
+
+                        <label for="visitor-pass">Associated Guest Pass ID (Optional)</label>
+                        <input type="text" id="visitor-pass">
+
+                        <label for="visitor-notes">Notes</label>
+                        <textarea id="visitor-notes" rows="3"></textarea>
+
+                        <button type="submit" class="primary-btn"><i class="fas fa-sign-in-alt"></i> CHECK IN</button>
+                    </form>
+                </div>
+
+                <div class="card log-card">
+                    <h3>Recent Check-Ins</h3>
+                    <div class="visitor-log-container">
+                        <table class="visitor-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Unit</th>
+                                    <th>Type</th>
+                                    <th>Check-In</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="visitor-log-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="violations" class="tab-content">
+            <h2>Towing & Violation Management</h2>
             
-            <button onclick="window.openModal('concierge-modal')" class="submit-btn full-width-btn">
-                <i class="fas fa-envelope"></i> Send Email Request
-            </button>
+            <div class="liability-warning">
+                <i class="fas fa-exclamation-triangle"></i> 
+                <strong>TOWING LIABILITY WARNING:</strong> Management is **NOT** liable for unregistered vehicles or for any damages resulting from a towed or booted vehicle. All enforcement actions taken via this interface must adhere strictly to documented community policies.
+            </div>
+
+            <div class="grid-layout">
+                <div class="card form-card">
+                    <h3>Record New Violation/Towing Action</h3>
+                    <form id="violation-form">
+                        <label for="violation-plate">Vehicle Plate Number</label>
+                        <input type="text" id="violation-plate" required maxlength="10">
+
+                        <label for="violation-reason">Violation Reason</label>
+                        <input type="text" id="violation-reason" required placeholder="Expired Pass, Fire Lane, Resident Spot">
+                        
+                        <label for="violation-action">Action Taken</label>
+                        <select id="violation-action" required>
+                            <option value="Towed">Towed (High Severity)</option>
+                            <option value="Booted">Booted</option>
+                            <option value="Warning">Warning Issued</option>
+                        </select>
+
+                        <label for="violation-notes">Detailed Notes</label>
+                        <textarea id="violation-notes" rows="4"></textarea>
+
+                        <button type="submit" class="danger-btn"><i class="fas fa-car-crash"></i> RECORD VIOLATION</button>
+                    </form>
+                </div>
+
+                <div class="card log-card">
+                    <h3>Search Plate History</h3>
+                    <form id="plate-search-form">
+                        <label for="search-plate">Search Plate Number</label>
+                        <input type="text" id="search-plate" required maxlength="10">
+                        <button type="submit" id="search-plate-btn" class="secondary-btn"><i class="fas fa-history"></i> SEARCH HISTORY</button>
+                    </form>
+
+                    <div id="plate-history-results">
+                        <p class="info-message">Enter a plate number above to check for past violations.</p>
+                        <ul id="violation-history-list">
+                            </ul>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <div id="concierge-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="window.closeModal('concierge-modal')">&times;</span>
-            <h4>New Concierge Request</h4>
-            <form id="concierge-email-form">
-                <div class="form-group">
-                    <label for="modalName">Your Name:</label>
-                    <input type="text" id="modalName" required>
-                </div>
-                <div class="form-group">
-                    <label for="modalSubject">Subject:</label>
-                    <input type="text" id="modalSubject" required>
-                </div>
-                <div class="form-group">
-                    <label for="modalBody">Message:</label>
-                    <textarea id="modalBody" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">Send Request</button>
+    <div class="portal-container" id="digital-portal" style="display: none;">
+        <header>
+            <h1 class="portal-title">Guest Pass Verification Portal</h1>
+            <button id="management-link" class="action-link"><i class="fas fa-cog"></i> Back to Management</button>
+        </header>
+
+        <div class="lookup-form-card">
+            <h2>Verify Your Digital Parking Pass</h2>
+            <form id="portal-lookup-form">
+                <label for="portal-plate">Enter Your Vehicle Plate Number</label>
+                <input type="text" id="portal-plate" required maxlength="10">
+                <button type="submit" class="secondary-btn portal-btn"><i class="fas fa-qrcode"></i> LOOKUP PASS</button>
             </form>
+
+            <div id="portal-result" class="portal-result-card">
+                <p class="neutral-message">Pass status will appear here after search.</p>
+            </div>
         </div>
     </div>
 

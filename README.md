@@ -2,11 +2,20 @@
 #  CarparkApp
 ## Apartment Visitor Log Application (Full Stack)
 
-This project software is a **Full Stack Application** designed to replace outdated paper logbooks with a robust digital system for tracking visitors, deliveries, and contractors entering and exiting a residential or apartment complex. While the initial proof-of-concept used client-side storage, the current structure features separate **Frontend** and **Backend** components using **Node.js** to deliver a scalable solution for visitor and parking access management.
+This project has evolved into a professional Full Stack Application designed to consolidate visitor tracking, guest parking pass issuance, and enforcement logging into a single, highly efficient digital platform for residential and apartment complexes.
+
+It replaces the inherent limitations of paper logbooks and initial client-side storage with a robust, scalable architecture built on Node.js and SQLite. This upgrade transitions the system from a proof-of-concept into a reliable, enterprise-ready tool that ensures enhanced data persistence, security, and real-time functionality across all access management operations.
 
 ###  Author
 
 **Marjory D. Marquez**
+
+
+---
+
+## Latest Features & Key Improvements
+
+The application has been upgraded from a client-side proof-of-concept to a full-stack system with enhanced security and functionality.
 
 ---
 
@@ -26,16 +35,39 @@ This project software is a **Full Stack Application** designed to replace outdat
 
 This application is built as a **Full Stack** project, utilizing distinct **Frontend** and **Backend** components for modularity and scalability.
 
+### 1. Unified Management Interface
+
+The application now features a primary dashboard with three distinct, professionally styled tabs:
+
+* **Parking Passes:** Digital pass generation and active pass log.
+* **Visitor Log:** Real-time check-in and check-out for visitors and contractors.
+* **Towing & Violations:** Dedicated form to record enforcement actions (**Towed**, **Booted**, **Warning**) and search plate history.
+
+### 2. Digital Pass Lookup Portal (NEW)
+
+A second public-facing portal is available via a link on the main page. This is used by security or guests to quickly:
+
+* **Verify Pass Status:** Enter a license plate to instantly check if a digital pass is active or expired.
+* **Liability Disclaimer:** The **Towing & Violations** tab includes a prominent **Liability Warning** to ensure staff are aware that management is not responsible for unregistered or towed vehicles.
+
+### 3. Full Stack Architecture
+
+* **Server Logic:** All complex logic (pass generation, check-in, lookups) is handled by the **backend API**.
+* **Data Persistence:** Data is stored persistently in an **SQLite** database, not local storage, ensuring data integrity and scalability.
+* **Automated Cleanup:** A **Node-Cron job** runs hourly on the server to automatically delete all expired parking passes, keeping the database clean and efficient.
+
+---
+
 ### Languages & Core Technologies
 
-| Component | Technology / Language | Description |
+| Component | Technology / Language | Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | **HTML5** | Provides the basic structure for the application forms and tables (`index.html`). |
-| **Frontend** | **CSS3 / Bootstrap** | Handles styling, ensuring a clean, modern, and **responsive** user interface. |
-| **Frontend** | **JavaScript (JS)** | Manages client-side logic, form handling, and local data persistence (`index.js`). |
-| **Backend** | **Node.js / Express.js** | The server-side runtime environment and framework for handling API routes. |
-| **Backend** | **JavaScript** | The primary language used for all server logic (`server.js`). |
-| **Data Format** | **JSON** | The standard format for transferring data between the client and the server (API requests). |
+| **Frontend** | **HTML5, CSS3, JavaScript** | Clean, modern, **professional** user interface with card-based layouts and high usability. |
+| **Backend** | **Node.js / Express.js** | High-speed server runtime and robust framework for API route handling. |
+| **Database** | **SQLite** | Lightweight, file-based SQL database for persistent, transactional storage of all logs and passes. |
+| **Tools** | **node-cron** | Manages hourly cleanup job to expire old passes automatically. |
+| **Data Format** | **JSON** | The standard format for all API data transfer. |
+
 
 ### File Structure Overview
 

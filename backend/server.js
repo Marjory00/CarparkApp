@@ -2,15 +2,15 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cron = require('node-cron');
-const sqlite = require('sqlite'); // NEW: Import sqlite
-const sqlite3 = require('sqlite3'); // NEW: Import sqlite3 driver
+const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3');
 const app = express();
 const PORT = 3000;
 
 // Database file path
-const DB_PATH = path.join(__dirname, 'carpark.db'); // Database will be created in the backend folder
+const DB_PATH = path.join(__dirname, 'carpark.db');
 
-// Database connection object (will be initialized later)
+// Database connection object
 let db;
 
 // --- Utility Functions: Database Initialization ---
@@ -50,11 +50,24 @@ async function initDB() {
         );
     `);
     console.log('SQLite: Visitor Log table ensured.');
+
+    // 3. Create Violation Log Table
+    await db.exec(`
+        CREATE TABLE IF NOT EXISTS violation_log (
+            id INTEGER PRIMARY KEY,
+            plate TEXT NOT NULL,
+            reason TEXT NOT NULL,
+            action TEXT NOT NULL,
+            timestamp TEXT NOT NULL,
+            notes TEXT
+        );
+    `);
+    console.log('SQLite: Violation Log table ensured.');
 }
 
-// --- Scheduled Expiry Check (The Cron Job - NOW USING DB) ---
+// --- Scheduled Expiry Check (The Cron Job) ---
 
-// Schedule a function to run every hour at 0 minutes past the hour
+// Runs at the 0 minute of every hour
 cron.schedule('0 * * * *', async () => {
     console.log(`[CRON] Running hourly expiry cleanup: ${new Date().toLocaleString()}`);
 
@@ -63,13 +76,11 @@ cron.schedule('0 * * * *', async () => {
     try {
         const now = new Date().toISOString();
         
-        // Use SQL to delete all passes where the 'expires' time is less than the current time
         const result = await db.run(
             `DELETE FROM parking_passes WHERE expires < ?`,
             [now]
         );
 
-        // Changes is a property from the sqlite run() result
         if (result.changes > 0) {
             console.log(`[CRON] Cleanup complete. Removed ${result.changes} expired pass(es).`);
         } else {
@@ -87,16 +98,14 @@ app.use(express.static(path.join(__dirname, '../frontend')));
 app.use(express.json());
 
 
-// --- API Routes: Parking Passes (NOW USING DB) ---
+// --- API Routes: Parking Passes ---
 
 // GET active parking log data
 app.get('/api/parking/log', async (req, res) => {
     try {
-        // Select all active passes, ordered by expiry time
         const passes = await db.all('SELECT * FROM parking_passes ORDER BY expires ASC');
         res.json(passes);
     } catch (error) {
-        // If an error occurs, forward it to the global error handler
         console.error('Error in /api/parking/log:', error.message);
         res.status(500).json({ error: 'Failed to retrieve parking log from DB.' });
     }
@@ -110,7 +119,6 @@ app.post('/api/parking/pass', async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields: plate, unit, or duration.' });
     }
 
-    // Calculate expiration time based on duration (defaulting to 4 hours if something goes wrong)
     const durationHours = parseInt(duration, 10) || 4; 
     const expiryTime = new Date(Date.now() + durationHours * 60 * 60 * 1000).toISOString();
     const passId = `GP-${Date.now() % 10000}`;
@@ -130,26 +138,23 @@ app.post('/api/parking/pass', async (req, res) => {
             pass: newPass
         });
     } catch (error) {
-        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to insert new pass:', error.message);
         res.status(500).json({ error: 'Failed to save pass to database.' });
     }
 });
 
-// ⭐ NEW FEATURE: DELETE /api/parking/pass/:id - Manually revoke/delete a parking pass ⭐
+// DELETE /api/parking/pass/:id - Manually revoke/delete a parking pass
 app.delete('/api/parking/pass/:id', async (req, res) => {
-    const { id } = req.params; // Get the pass ID from the URL parameter
+    const { id } = req.params;
 
     if (!id) {
         return res.status(400).json({ error: 'Missing pass ID.' });
     }
 
     try {
-        // Run the deletion query
         const result = await db.run('DELETE FROM parking_passes WHERE id = ?', id);
 
         if (result.changes === 0) {
-            // No rows were deleted, meaning the pass ID was not found
             return res.status(404).json({ message: `Pass ${id} not found or already revoked.` });
         }
 
@@ -158,18 +163,39 @@ app.delete('/api/parking/pass/:id', async (req, res) => {
 
     } catch (error) {
         console.error('DB ERROR: Failed to revoke pass:', error.message);
-        // Forward to global error handler
         res.status(500).json({ error: 'Failed to revoke pass from database.' });
     }
 });
 
+// NEW: GET Digital Pass Lookup
+app.get('/api/parking/lookup/:plate', async (req, res) => {
+    const plate = req.params.plate.toUpperCase();
+    
+    try {
+        const pass = await db.get(
+            `SELECT * FROM parking_passes WHERE plate = ?`,
+            [plate]
+        );
 
-// --- API Routes: Visitor Log (NOW USING DB) ---
+        if (pass) {
+            // Pass found. We send the pass object. The frontend checks expiry.
+            res.json({ pass: pass });
+        } else {
+            // No pass found for this plate.
+            res.json({ pass: null, message: 'No active pass found for this plate.' });
+        }
+    } catch (error) {
+        console.error('Error in /api/parking/lookup:', error.message);
+        res.status(500).json({ error: 'Failed to perform plate lookup.' });
+    }
+});
+
+
+// --- API Routes: Visitor Log ---
 
 // 1. GET Visitor Log
 app.get('/api/visitor/log', async (req, res) => {
     try {
-        // Select all visitors, prioritizing un-checked-out visitors, then sorting by recent check-in
         const visitors = await db.all(`
             SELECT * FROM visitor_log 
             ORDER BY 
@@ -178,7 +204,6 @@ app.get('/api/visitor/log', async (req, res) => {
         `);
         res.json(visitors);
     } catch (error) {
-        // If an error occurs, forward it to the global error handler
         console.error('Error in /api/visitor/log:', error.message);
         res.status(500).json({ error: 'Failed to retrieve visitor log from DB.' });
     }
@@ -195,7 +220,6 @@ app.post('/api/visitor/checkin', async (req, res) => {
     const checkInTime = new Date().toISOString();
     
     try {
-        // Insert and get the last inserted ID (which is the primary key)
         const result = await db.run(
             `INSERT INTO visitor_log (name, unit, type, guestPass, notes, checkInTime) 
              VALUES (?, ?, ?, ?, ?, ?)`,
@@ -204,17 +228,13 @@ app.post('/api/visitor/checkin', async (req, res) => {
 
         const newVisitor = { 
             id: result.lastID, name, unit, type, 
-            guestPass: guestPass || null, 
-            notes: notes || null, 
-            checkInTime, 
-            checkOutTime: null 
+            guestPass: guestPass || null, notes: notes || null, checkInTime, checkOutTime: null 
         };
         
         console.log(`Visitor checked in: ${name} (${unit})`);
         res.status(201).json({ message: 'Visitor checked in.', visitor: newVisitor });
 
     } catch (error) {
-        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to insert new visitor:', error.message);
         res.status(500).json({ error: 'Failed to save visitor data to database.' });
     }
@@ -222,19 +242,17 @@ app.post('/api/visitor/checkin', async (req, res) => {
 
 // 3. PATCH Visitor Check-Out
 app.patch('/api/visitor/checkout/:id', async (req, res) => {
-    const visitorId = req.params.id; // ID from URL param
+    const visitorId = req.params.id;
 
     try {
         const checkOutTime = new Date().toISOString();
         
-        // Update the row where the ID matches and checkOutTime is NULL
         const result = await db.run(
             `UPDATE visitor_log SET checkOutTime = ? WHERE id = ? AND checkOutTime IS NULL`,
             [checkOutTime, visitorId]
         );
 
         if (result.changes === 0) {
-            // Check if visitor exists but was already checked out
             const visitor = await db.get(`SELECT * FROM visitor_log WHERE id = ?`, [visitorId]);
             if (!visitor) {
                 return res.status(404).json({ message: 'Visitor not found.' });
@@ -248,23 +266,68 @@ app.patch('/api/visitor/checkout/:id', async (req, res) => {
         return res.json({ message: 'Visitor checked out successfully.' });
 
     } catch (error) {
-        // If an error occurs, forward it to the global error handler
         console.error('DB ERROR: Failed to check out visitor:', error.message);
         res.status(500).json({ error: 'Failed to update database.' });
     }
 });
 
+// --- API Routes: Violation Log ---
+
+// 1. GET Plate History (Search Violation Log)
+app.get('/api/violations/history/:plate', async (req, res) => {
+    const plate = req.params.plate.toUpperCase();
+    
+    try {
+        const history = await db.all(
+            `SELECT * FROM violation_log WHERE plate = ? ORDER BY timestamp DESC`,
+            [plate]
+        );
+        res.json(history);
+    } catch (error) {
+        console.error('Error in /api/violations/history:', error.message);
+        res.status(500).json({ error: 'Failed to retrieve plate history.' });
+    }
+});
+
+// 2. POST New Violation (Towing/Citation Action)
+app.post('/api/violations/record', async (req, res) => {
+    const { plate, reason, action, notes } = req.body;
+    
+    if (!plate || !reason || !action) {
+        return res.status(400).json({ error: 'Missing required fields: plate, reason, or action.' });
+    }
+
+    const timestamp = new Date().toISOString();
+    
+    try {
+        const result = await db.run(
+            `INSERT INTO violation_log (plate, reason, action, timestamp, notes) 
+             VALUES (?, ?, ?, ?, ?)`,
+            [plate.toUpperCase(), reason, action, timestamp, notes || null]
+        );
+
+        const newViolation = { id: result.lastID, plate: plate.toUpperCase(), reason, action, timestamp };
+        
+        console.log(`Violation recorded for ${plate.toUpperCase()}. Action: ${action}`);
+        res.status(201).json({ 
+            message: 'Violation recorded successfully.', 
+            violation: newViolation 
+        });
+
+    } catch (error) {
+        console.error('DB ERROR: Failed to record violation:', error.message);
+        res.status(500).json({ error: 'Failed to save violation data to database.' });
+    }
+});
+
 
 // --- GLOBAL ERROR HANDLER ---
-// This is the last middleware, catching any errors that were explicitly passed 
-// via next(err) or uncaught in the synchronous code above.
 app.use((err, req, res, next) => {
     console.error('--- Global Error Handler Caught Exception ---');
     console.error(`Route: ${req.method} ${req.originalUrl}`);
     console.error(err.stack);
     console.error('-------------------------------------------');
 
-    // Send a generic 500 error response for safety
     res.status(500).json({
         error: 'An unexpected internal server error occurred.',
         details: err.message
@@ -275,14 +338,13 @@ app.use((err, req, res, next) => {
 // --- Start Server ---
 async function startServer() {
     try {
-        await initDB(); // Initialize the database connection and tables first
+        await initDB();
         app.listen(PORT, () => {
             console.log(`CarparkApp server running at http://localhost:${PORT}`);
             console.log(`Frontend accessible at http://localhost:${PORT}/index.html`);
             console.log(`Using SQLite database: ${DB_PATH}`);
         });
     } catch (error) {
-        // This is the final safety catch for DB initialization failure
         console.error('FATAL ERROR: Failed to start the server or initialize database:', error);
         process.exit(1);
     }

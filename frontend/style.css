@@ -1,323 +1,506 @@
-/* frontend/style.css */
+/*
+*** CARPARKAPP STYLES: MODERN & PROFESSIONAL REDESIGN ***
+*/
 
-/* --- General Structure & Typography --- */
+:root {
+    --primary-color: #00796b; /* Teal */
+    --primary-dark: #004d40;
+    --secondary-color: #3f51b5; /* Indigo/Blue */
+    --background-color: #f8f9fa; /* Light Gray */
+    --card-background: #ffffff;
+    --border-color: #e9ecef;
+    --text-color: #343a40;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f7f6;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
-    padding: 0;
+    padding: 30px 20px;
     display: flex;
     justify-content: center;
     min-height: 100vh;
 }
 
-.container {
-    background-color: #ffffff;
-    padding: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    margin: 40px 20px;
+/* --- Global Structure --- */
+
+.container, .portal-container {
     width: 100%;
-    max-width: 900px;
-}
-
-h1 {
-    color: #004d40;
-    margin-bottom: 5px;
-}
-
-h2 {
-    border-bottom: 2px solid #e0e0e0;
-    padding-bottom: 10px;
-    margin-top: 30px;
-    color: #00796b;
-}
-
-/* --- Tabs Navigation --- */
-.tab-buttons {
-    display: flex;
-    border-bottom: 2px solid #e0e0e0;
-    margin-bottom: 20px;
-}
-
-.tab-button {
-    flex-grow: 1;
-    padding: 12px 15px;
-    cursor: pointer;
-    border: none;
-    background-color: #f9f9f9;
-    color: #555;
-    font-weight: bold;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.tab-button:hover {
-    background-color: #e5f4f2;
-}
-
-.tab-button.active {
-    background-color: #00796b;
-    color: white;
-    border-radius: 4px 4px 0 0;
-}
-
-.tab-content {
-    display: none;
-    padding-top: 15px;
-}
-
-.tab-content.active {
-    display: block;
-}
-
-/* --- Forms & Inputs --- */
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
-}
-
-.form-group input[type="text"],
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    max-width: 1200px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    padding: 30px 40px;
+    background-color: var(--card-background);
     box-sizing: border-box;
-    font-size: 16px;
 }
 
-.full-width-group {
-    grid-column: 1 / -1;
-}
-
-.submit-btn {
-    padding: 10px 20px;
-    background-color: #004d40;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.submit-btn:hover {
-    background-color: #00332d;
-}
-
-.full-width-btn {
-    grid-column: 1 / -1;
-    margin-top: 10px;
-}
-
-/* --- Pass Preview Section --- */
-.hidden-preview {
-    display: none;
-}
-
-.visible-preview {
-    display: block;
-    margin-top: 30px;
-    padding: 20px;
-    border: 3px solid #00796b;
-    border-radius: 8px;
-    background-color: #e8f5e9;
-    box-shadow: 0 2px 10px rgba(0, 121, 107, 0.2);
-    animation: fadeIn 0.5s;
-}
-
-.pass-preview-header {
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px dashed #00796b;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 15px;
+    margin-bottom: 30px;
 }
 
-.pass-preview-header h4 {
+h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 28px;
     margin: 0;
-    color: #004d40;
 }
 
-.pass-preview-header i {
-    font-size: 24px;
-    color: #00796b;
-}
-
-.pass-detail-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+h2 {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 22px;
     margin-bottom: 20px;
 }
 
-.detail .label {
-    display: block;
-    font-size: 12px;
-    color: #555;
-    margin-bottom: 3px;
-}
-
-.detail strong {
+h3 {
     font-size: 18px;
-    color: #000;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-top: 0;
+    margin-bottom: 15px;
 }
 
-.expiry-time {
-    text-align: center;
-    padding: 15px;
-    background-color: #c8e6c9;
+/* --- Action Links/Buttons for Switching Views --- */
+.action-link {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-color);
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.action-link:hover {
+    background-color: var(--secondary-color);
+    color: var(--card-background);
+}
+
+
+/* --- Tab Navigation --- */
+.tab-navigation {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tab-button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; /* Pull button to line up with border */
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: 600;
+}
+
+/* --- Card & Grid Layouts --- */
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Form column fixed, log column flexible */
+    gap: 30px;
+}
+
+.card {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    border: 1px solid var(--border-color);
+}
+
+
+/* --- Forms and Inputs --- */
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #495057;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+input[type="text"], 
+input[type="number"], 
+select, 
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
     border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.expiry-time strong {
-    font-size: 24px;
-    color: #d32f2f; /* Red for urgency */
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 121, 107, 0.1);
+    outline: none;
 }
 
-/* --- Active Pass List --- */
+/* Base Button Styles */
+.primary-btn, .secondary-btn, .danger-btn {
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 20px;
+    transition: background-color 0.3s, opacity 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+.primary-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.secondary-btn {
+    background-color: var(--secondary-color);
+    color: white;
+}
+.secondary-btn:hover {
+    background-color: #303f9f;
+}
+
+.danger-btn {
+    background-color: var(--danger-color);
+    color: white;
+}
+.danger-btn:hover {
+    background-color: #c82333;
+}
+
+
+/* --- Message Styles (Info/Alerts) --- */
+
+.info-message, .success-message, .error-message, .neutral-message {
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 15px;
+    font-size: 14px;
+    text-align: center;
+    border: 1px solid transparent;
+}
+
+.info-message {
+    background-color: #e2f2ff; /* Light Blue */
+    color: #0056b3;
+    border-color: #b3e0ff;
+}
+.success-message {
+    background-color: #d4edda;
+    color: var(--success-color);
+    border-color: #c3e6cb;
+}
+.error-message {
+    background-color: #f8d7da;
+    color: var(--danger-color);
+    border-color: #f5c6cb;
+}
+.neutral-message {
+    background-color: #f1f1f1;
+    color: #6c757d;
+    border-color: #e0e0e0;
+}
+
+
+/* --- Parking Log (List) Styles --- */
+
 #active-passes-list {
     list-style: none;
     padding: 0;
 }
 
 .pass-list-item {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 10px 15px;
-    margin-bottom: 8px;
-    border-left: 5px solid #00796b;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.info-message {
+    background-color: var(--card-background);
+    border: 1px solid #e9ecef;
     padding: 15px;
-    background-color: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeeba;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: bold;
+    margin-bottom: 10px;
+    border-left: 6px solid var(--primary-color);
+    border-radius: 6px;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.2s;
 }
 
-/* --- Visitor Log Table --- */
-.table-container {
+.pass-list-item:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.pass-info strong {
+    font-weight: 700;
+    color: #333;
+}
+
+/* Revoke Button */
+.revoke-btn {
+    background-color: var(--danger-color); 
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    margin-left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+    width: auto; /* Override 100% width from general button styles */
+    margin-top: 0;
+}
+
+.revoke-btn:hover {
+    background-color: #a71d2a;
+}
+
+/* --- Pass Preview Styles --- */
+
+#pass-preview-section {
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+    transition: all 0.5s ease;
+    border: 2px dashed #b3e0ff;
+    background-color: #f0f8ff;
+}
+
+.hidden-preview {
+    opacity: 0;
+    max-height: 0;
+    padding: 0 20px; 
+    margin-top: 0;
+    overflow: hidden;
+    border: none;
+    background-color: transparent;
+}
+
+.visible-preview {
+    opacity: 1;
+    max-height: 200px; /* Use max-height for smooth transition */
+    padding: 20px;
+}
+
+
+/* --- Visitor Log Table Styles --- */
+
+.visitor-log-container {
     overflow-x: auto;
-    margin-top: 15px;
 }
 
 .visitor-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 15px;
+    font-size: 14px;
 }
 
 .visitor-table th, .visitor-table td {
-    border: 1px solid #e0e0e0;
-    padding: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 15px;
     text-align: left;
 }
 
 .visitor-table th {
-    background-color: #004d40;
-    color: white;
-    font-weight: normal;
+    background-color: #f1f3f5;
+    color: var(--text-color);
+    font-weight: 600;
     text-transform: uppercase;
     font-size: 12px;
+    border-top: 1px solid var(--border-color);
 }
 
-.visitor-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+.visitor-table tr:hover:not(.checked-out-row) {
+    background-color: #f8f9fa;
 }
 
+/* Style for completed (checked-out) rows */
 .checked-out-row {
-    background-color: #e0e0e0 !important;
-    opacity: 0.7;
-    font-style: italic;
+    color: #999;
+    background-color: #fdfdfd !important;
 }
 
 .check-out-btn {
-    background-color: #f44336;
+    background-color: #ff9800; /* Amber for clear action */
     color: white;
-    padding: 5px 10px;
     border: none;
-    border-radius: 3px;
+    padding: 8px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    width: auto; /* Override 100% width */
+    margin-top: 0;
 }
 
 .check-out-btn:hover {
-    background-color: #d32f2f;
+    background-color: #fb8c00;
 }
 
-/* --- Modal Styling --- */
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 10; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4); 
+
+/* --- Violation Log Styles --- */
+
+.liability-warning {
+    background-color: #fff8e1; 
+    border: 1px solid var(--warning-color); 
+    color: #856404; 
+    padding: 15px;
+    margin-bottom: 25px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
 }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; 
-    max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+.liability-warning strong {
+    font-weight: 700;
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
+.liability-warning i {
+    font-size: 18px;
+    color: var(--warning-color);
+}
+
+#plate-history-results {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--card-background);
+}
+
+#violation-history-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.violation-record {
+    border-bottom: 1px dotted #ccc;
+    padding: 10px 0;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.violation-details {
+    padding-left: 10px;
+    border-left: 3px solid #ccc;
+    position: relative;
+}
+
+.severe-violation {
+    border-left: 3px solid var(--danger-color); 
+}
+
+.action-tag {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 10px;
     font-weight: bold;
+    margin-right: 10px;
 }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+/* === DIGITAL PASS LOOKUP PORTAL STYLES (NEW) === */
+
+.portal-container {
+    max-width: 600px;
+    padding: 40px;
+    text-align: center;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.portal-title {
+    color: var(--secondary-color);
+    font-size: 32px;
 }
 
-/* --- Responsiveness --- */
-@media (max-width: 768px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-    .pass-detail-grid {
-        grid-template-columns: 1fr;
-    }
-    .visitor-table th, .visitor-table td {
-        padding: 8px 5px;
-    }
+.lookup-form-card {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    margin-top: 30px;
+    border: 1px solid var(--border-color);
+}
+
+.portal-btn {
+    margin-top: 10px;
+}
+
+.portal-result-card {
+    min-height: 150px;
+    padding: 20px;
+    margin-top: 25px;
+    border-radius: 8px;
+    border: 2px dashed var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pass-valid {
+    background-color: #e6ffec; /* Very light green */
+    border-color: var(--success-color);
+}
+
+.pass-expired, .pass-not-found {
+    background-color: #ffe6e6; /* Very light red */
+    border-color: var(--danger-color);
+}
+
+.pass-details h4 {
+    color: var(--success-color);
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.pass-details p {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+.pass-details strong {
+    font-weight: 700;
 }
