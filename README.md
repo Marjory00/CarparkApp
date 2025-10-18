@@ -2,14 +2,13 @@
 #  CarparkApp
 ## Apartment Visitor Log Application (Full Stack)
 
-This project has evolved into a professional Full Stack Application designed to consolidate visitor tracking, guest parking pass issuance, and enforcement logging into a single, highly efficient digital platform for residential and apartment complexes.
+CarparkApp is a professional Full Stack application that serves as a centralized digital platform for access and parking management within residential and apartment complexes. It eliminates the inefficiencies of outdated paper logs and disjointed tracking systems.
 
-It replaces the inherent limitations of paper logbooks and initial client-side storage with a robust, scalable architecture built on Node.js and SQLite. This upgrade transitions the system from a proof-of-concept into a reliable, enterprise-ready tool that ensures enhanced data persistence, security, and real-time functionality across all access management operations.
+This system has been upgraded from a client-side proof-of-concept to a robust, enterprise-ready tool that ensures enhanced data persistence, security, and real-time functionality across all access management operations.
 
 ###  Author
 
 **Marjory D. Marquez**
-
 
 ---
 
@@ -34,6 +33,44 @@ The application has been upgraded from a client-side proof-of-concept to a full-
 ##  Technology Stack: Full Stack Application
 
 This application is built as a **Full Stack** project, utilizing distinct **Frontend** and **Backend** components for modularity and scalability.
+
+### 1. Unified Management Interface
+
+The application now features a primary dashboard with three distinct, professionally styled tabs:
+
+* **Parking Passes:** Digital pass generation and active pass log.
+* **Visitor Log:** Real-time check-in and check-out for visitors and contractors.
+* **Towing & Violations:** Dedicated form to record enforcement actions (**Towed**, **Booted**, **Warning**) and search plate history.
+
+### 2. Digital Pass Lookup Portal (NEW)
+
+A second public-facing portal is available via a link on the main page. This is used by security or guests to quickly:
+
+* **Verify Pass Status:** Enter a license plate to instantly check if a digital pass is active or expired.
+* **Liability Disclaimer:** The **Towing & Violations** tab includes a prominent **Liability Warning** to ensure staff are aware that management is not responsible for unregistered or towed vehicles.
+
+### 3. Full Stack Architecture
+
+* **Server Logic:** All complex logic (pass generation, check-in, lookups) is handled by the **backend API**.
+* **Data Persistence:** Data is stored persistently in an **SQLite** database, not local storage, ensuring data integrity and scalability.
+* **Automated Cleanup:** A **Node-Cron job** runs hourly on the server to automatically delete all expired parking passes, keeping the database clean and efficient.
+
+---
+
+## Core Purpose & Features 💡
+
+The **CarparkApp** application consolidates three critical management functions into a single, highly efficient interface:
+
+* **Digital Parking Pass Management:** Real-time generation, tracking, and **automatic expiration** of guest parking permits.
+* **Visitor Log & Tracking:** Centralized check-in/check-out for visitors, contractors, and deliveries.
+* **Enforcement & Violation Logging:** Dedicated module for recording towing, booting, and warning actions, including **plate history search**.
+* **Guest Lookup Portal:** A separate interface for security or guests to instantly **verify the validity** of a digital pass via license plate.
+
+---
+
+## Latest Features & Key Improvements
+
+The application has been upgraded from a client-side proof-of-concept to a full-stack system with enhanced security and functionality.
 
 ### 1. Unified Management Interface
 
