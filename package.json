@@ -4,16 +4,17 @@
   "author": "Marjory D. Marquez",
   "license": "ISC",
   "description": "Carpark Management Application",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js"
+    "start-backend": "cd backend && node server.js",
+    "start-frontend": "cd frontend && http-server",
+    "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\""
   },
   "keywords": [
+    "monorepo",
     "express",
-    "sqlite",
-    "parking"
+    "client",
+    "backend"
   ],
   "dependencies": {
     "express": "^5.1.0",
@@ -22,6 +23,9 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2",
     "nodemon": "^3.1.10"
   }
 }

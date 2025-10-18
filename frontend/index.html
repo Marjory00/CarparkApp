@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚗 CarparkApp | Unified Access & Parking Management</title>
+    <title>CarparkApp | Unified Access & Parking Management</title>
     <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
 
     <header>
-        <h1>🚗 CarparkApp Management System</h1>
+        <h1><i class="fas fa-car-alt"></i> CarparkApp Management System</h1>
         <div id="auth-controls">
             <span id="user-info-display"></span>
             <button id="logout-btn" style="display:none;">Logout</button>
@@ -18,21 +19,26 @@
 
     <div id="main-dashboard" class="view-container">
 
+        <div class="card search-card">
+            <input type="text" id="global-search-input" placeholder="Search Plate, Unit, or Resident Name" aria-label="Global Search">
+            <div id="global-search-results" class="data-display"></div>
+        </div>
+        
         <nav class="tabs-nav">
-            <button class="tab-button active" data-tab="parking-passes-tab">Parking Passes 🎫</button>
-            <button class="tab-button" data-tab="visitor-log-tab">Visitor Log 📋</button>
-            <button class="tab-button" data-tab="towing-violations-tab">Towing & Violations 🚨</button>
-            <button class="tab-button" data-tab="resident-management-tab">Resident Management 🏠</button>
+            <button class="tab-button active" data-tab="parking-passes-tab"><i class="fas fa-ticket-alt"></i> Parking Passes</button>
+            <button class="tab-button" data-tab="visitor-log-tab"><i class="fas fa-clipboard-list"></i> Visitor Log</button>
+            <button class="tab-button" data-tab="towing-violations-tab"><i class="fas fa-exclamation-triangle"></i> Towing & Violations</button>
+            <button class="tab-button" data-tab="resident-management-tab"><i class="fas fa-home"></i> Resident Management</button>
             
-            <button class="tab-button manager-only" data-tab="system-log-tab">System Log 📝</button>
-            <button class="tab-button manager-only" data-tab="user-management-tab">User Management 🔑</button>
+            <button class="tab-button manager-only" data-tab="management-section-tab"><i class="fas fa-tools"></i> Management</button>
         </nav>
 
         <main class="tabs-content">
-
+            
             <section id="parking-passes-tab" class="tab-content">
-                <h2>🎫 Digital Parking Pass Management</h2>
+                <h2><i class="fas fa-ticket-alt"></i> Digital Parking Pass Management</h2>
                 <div class="card">
+                    <h3>Issue Temporary Pass</h3>
                     <form id="pass-form">
                         <div class="form-group"><label for="pass-plate">License Plate:</label><input type="text" id="pass-plate" required placeholder="XYZ 123"></div>
                         <div class="form-group"><label for="pass-unit">Unit Number:</label><input type="text" id="pass-unit" required placeholder="Apt 101"></div>
@@ -48,8 +54,9 @@
             </section>
 
             <section id="visitor-log-tab" class="tab-content" style="display:none;">
-                <h2>📋 Visitor Check-In/Check-Out</h2>
+                <h2><i class="fas fa-clipboard-list"></i> Visitor Check-In/Check-Out</h2>
                 <div class="card">
+                    <h3>Register New Visitor</h3>
                     <form id="checkin-form">
                         <div class="form-group"><label for="visitor-name">Visitor Name:</label><input type="text" id="visitor-name" required></div>
                         <div class="form-group"><label for="visitor-unit">Resident Unit:</label><input type="text" id="visitor-unit" required></div>
@@ -71,9 +78,10 @@
             </section>
 
             <section id="towing-violations-tab" class="tab-content" style="display:none;">
-                <h2>🚨 Enforcement & Violation Logging</h2>
+                <h2><i class="fas fa-exclamation-triangle"></i> Enforcement & Violation Logging</h2>
                 <p class="warning-message">**Liability Warning:** Ensure all actions comply with property policy before logging an enforcement event.</p>
                 <div class="card">
+                    <h3>Log New Violation</h3>
                     <form id="violation-form">
                         <div class="form-group"><label for="violation-plate">License Plate:</label><input type="text" id="violation-plate" required placeholder="ABC 789"></div>
                         <div class="form-group"><label for="violation-type">Violation Type:</label>
@@ -93,7 +101,7 @@
             </section>
 
             <section id="resident-management-tab" class="tab-content" style="display:none;">
-                <h2>🏠 Resident Management</h2>
+                <h2><i class="fas fa-home"></i> Resident Management</h2>
                 <p>Centralized system to manage resident units, primary vehicles, and contact information.</p>
                 <div class="card">
                     <h3>Add/Update Resident</h3>
@@ -101,49 +109,114 @@
                         <div class="form-group"><label for="res-unit">Unit Number:</label><input type="text" id="res-unit" required placeholder="Apt 101"></div>
                         <div class="form-group"><label for="res-name">Primary Contact:</label><input type="text" id="res-name" required></div>
                         <div class="form-group"><label for="res-phone">Phone (Optional):</label><input type="text" id="res-phone" placeholder="(555) 555-1234"></div>
-                        <div class="form-group"><label for="res-plate">Primary Plate (Optional):</label><input type="text" id="res-plate" placeholder="XYZ 789"></div>
+                        <div class="form-group"><label for="res-email">Email (Optional):</label><input type="email" id="res-email" placeholder="john.doe@email.com"></div>
+                        <div class="form-group"><label for="res-plate">Primary Plate:</label><input type="text" id="res-plate" required placeholder="XYZ 789 (Required)"></div>
                         <button type="submit" class="btn primary-btn">Save Resident</button>
                     </form>
                 </div>
                 <h3>Active Residents</h3>
                 <table id="active-residents-table" class="data-table">
-                    <thead><tr><th>Unit</th><th>Contact</th><th>Phone</th><th>Primary Plate</th><th>Action</th></tr></thead>
+                    <thead><tr><th>Unit</th><th>Contact</th><th>Plate</th><th>Phone</th><th>Email</th><th>Action</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </section>
+            
+            <section id="management-section-tab" class="tab-content manager-feature" style="display:none;">
+                <h2><i class="fas fa-tools"></i> Administrative Management Tools</h2>
+                <p>Access control, reporting, and system administration features for Managers.</p>
 
-            <section id="system-log-tab" class="tab-content manager-feature" style="display:none;">
-                <h2>📝 System Activity Log</h2>
-                <p>Displays all critical actions (Pass Creation, Violations, User Login) for accountability.</p>
-                <table id="activity-log-table" class="data-table">
-                    <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Details</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </section>
-
-            <section id="user-management-tab" class="tab-content manager-feature" style="display:none;">
-                <h2>🔑 User Management</h2>
-                <p>Create, edit, or disable Guard and Manager accounts.</p>
-                <div class="card">
-                    <form id="user-form">
-                        <div class="form-group"><label for="new-username">Username:</label><input type="text" id="new-username" required></div>
-                        <div class="form-group"><label for="new-password">Password:</label><input type="password" id="new-password" required></div>
-                        <div class="form-group"><label for="new-role">Role:</label>
-                            <select id="new-role">
-                                <option value="Guard">Guard</option>
-                                <option value="Manager">Manager</option>
-                            </select>
+                <nav class="sub-tabs-nav">
+                    <button class="sub-tab-button active" data-sub-tab="gate-codes-sub"><i class="fas fa-door-open"></i> Gate Codes</button>
+                    <button class="sub-tab-button" data-sub-tab="reporting-sub"><i class="fas fa-chart-line"></i> Reporting</button>
+                    <button class="sub-tab-button" data-sub-tab="system-log-sub"><i class="fas fa-file-alt"></i> System Log</button>
+                    <button class="sub-tab-button" data-sub-tab="user-management-sub"><i class="fas fa-users-cog"></i> User Accounts</button>
+                </nav>
+                
+                <div class="sub-tabs-content">
+                
+                    <div id="gate-codes-sub" class="sub-tab-content">
+                        <h3>Gate Code Management</h3>
+                        <div class="card">
+                            <form id="gate-code-form">
+                                <div class="form-group"><label for="code-value">Code (4-8 Digits):</label><input type="text" id="code-value" required placeholder="1234"></div>
+                                <div class="form-group"><label for="code-label">Label/Recipient:</label><input type="text" id="code-label" required placeholder="Apt 205 Primary"></div>
+                                <div class="form-group"><label for="code-type">Type:</label>
+                                    <select id="code-type">
+                                        <option value="Permanent">Permanent</option>
+                                        <option value="Temporary">Temporary</option>
+                                    </select>
+                                </div>
+                                <div class="form-group"><label for="code-expiry">Expires (Optional):</label><input type="date" id="code-expiry"></div>
+                                <button type="submit" class="btn secondary-btn">Generate & Activate Code</button>
+                            </form>
                         </div>
-                        <button type="submit" class="btn secondary-btn">Create/Update User</button>
-                    </form>
-                </div>
-                <h3>Current Staff Accounts</h3>
-                <table id="user-accounts-table" class="data-table">
-                    <thead><tr><th>User ID</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </section>
+                        <h3>Active Gate Codes</h3>
+                        <table id="active-gate-codes-table" class="data-table">
+                            <thead><tr><th>Code</th><th>Label</th><th>Type</th><th>Expiry Date</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
 
+                    <div id="reporting-sub" class="sub-tab-content" style="display:none;">
+                        <h3>Reporting & Analytics</h3>
+                        <p>Generate reports on parking pass usage, violation statistics, and visitor trends.</p>
+                        <div class="card">
+                            <h4>Violation Summary Report</h4>
+                            <p>Total violations logged per type in the last 30 days:</p>
+                            <table class="data-table">
+                                <thead><tr><th>Type</th><th>Count</th><th>% Total</th></tr></thead>
+                                <tbody id="violation-summary-body">
+                                    <tr><td>Towed</td><td>0</td><td>0%</td></tr>
+                                    <tr><td>Booted</td><td>0</td><td>0%</td></tr>
+                                    <tr><td>Warning</td><td>0</td><td>0%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card">
+                            <h4>Pass Expiration Forecast</h4>
+                            <p>View upcoming pass expirations (Next 7 days).</p>
+                            <table id="expiration-forecast-table" class="data-table">
+                                <thead><tr><th>Plate</th><th>Unit</th><th>Expires In</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="system-log-sub" class="sub-tab-content" style="display:none;">
+                        <h3>System Activity Log</h3>
+                        <p>Displays all critical actions (Pass Creation, Violations, User Login) for accountability.</p>
+                        <table id="activity-log-table" class="data-table">
+                            <thead><tr><th>Timestamp</th><th>User</th><th>Role</th><th>Action</th><th>Details</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+
+                    <div id="user-management-sub" class="sub-tab-content" style="display:none;">
+                        <h2>User Management</h2>
+                        <p>Create, edit, or disable Guard and Manager accounts.</p>
+                        <div class="card">
+                            <h3>Create New Staff Account</h3>
+                            <form id="user-form">
+                                <div class="form-group"><label for="new-username">Username:</label><input type="text" id="new-username" required></div>
+                                <div class="form-group"><label for="new-password">Password:</label><input type="password" id="new-password" required></div>
+                                <div class="form-group"><label for="new-role">Role:</label>
+                                    <select id="new-role">
+                                        <option value="Guard">Guard</option>
+                                        <option value="Manager">Manager</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn secondary-btn">Create/Update User</button>
+                            </form>
+                        </div>
+                        <h3>Current Staff Accounts</h3>
+                        <table id="user-accounts-table" class="data-table">
+                            <thead><tr><th>User ID</th><th>Username</th><th>Role</th><th>Action</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                    
+                </div> </section>
+            
         </main>
     </div>
 
