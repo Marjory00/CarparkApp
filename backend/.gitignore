@@ -3,6 +3,8 @@
 /node_modules
 /.pnp
 .pnp.js
+dist/
+build/
 
 # Testing
 /coverage
@@ -20,11 +22,10 @@ lerna-debug.log*
 .env.local
 
 /backend/server.js
-/backend/routes/reporting.js
-/backend/db.js
-/backend/routes/passes.js
-/backend/routes/auth.js
-/backend/controllers/reportingController.js
-/backend/controllers/residentsController.js
-/backend
 
+/backend/db.js
+
+# Exclude all folders that contain sensitive or local implementation logic
+/backend/controllers/
+/backend/middleware/
+/backend/routes/
