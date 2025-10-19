@@ -28,10 +28,11 @@ The primary management dashboard provides a unified view of Passes, Residents, a
 
 
 ### Dashboard 
-![CarparkApp Main Dashboard Overview](frontend/assets/images/screenshot/Dashboard.png)
+<img src="frontend/assets/images/screenshot/Dashboard.png" alt="CarparkApp Main Dashboard Overview" width="600"/>
 
 ### Resident Management
-![CarparkApp Resident Management Tab](frontend/assets/images/screenshot/Resident.png)
+<img src="frontend/assets/images/screenshot/resident.png" alt="Resident Management" width="600"/>
+
 
 ### Passes & Permits
 ![CarparkApp Passes and Permits Tab](frontend/assets/images/screenshot/passes.png)
