@@ -1,537 +1,308 @@
-// app.js - CarparkApp Unified Frontend Logic (DEV MODE: Manager Access Granted)
+// CarparkApp/frontend/app.js
 
-// --- GLOBAL STATE ---
-// HARDCODED MANAGER USER FOR DEVELOPMENT 
-let currentUser = { 
-    token: "DEV_MODE_TOKEN_12345", 
-    role: "Manager", 
-    userId: 99, // IMPORTANT: Used as issued_by ID in API calls
-    username: "dev_manager"
-}; 
-const API_BASE = '/api';
+// --- Configuration ---
+const API_BASE_URL = 'http://localhost:3000/api';
 
-// --- VIEW REFERENCES ---
-// Global/Auth & Search
-const mainDashboard = document.getElementById('main-dashboard');
-const logOutButton = document.getElementById('logout-btn');
-const userInfoDisplay = document.getElementById('user-info-display');
-const globalSearchInput = document.getElementById('global-search-input');
-const globalSearchResults = document.getElementById('global-search-results');
+// --- State Variables ---
+// FIX: Explicitly set default role to 'Manager' for full development access
+let currentUserRole = 'Manager'; 
+let isLoggedIn = false;
 
-// Tab Content Areas
-const parkingPassesTab = document.getElementById('parking-passes-tab');
-const visitorLogTab = document.getElementById('visitor-log-tab');
-const towingViolationsTab = document.getElementById('towing-violations-tab');
-const residentManagementTab = document.getElementById('resident-management-tab');
-const managementSectionTab = document.getElementById('management-section-tab'); // CONSOLIDATED MANAGER TAB
+// --- Helper Functions ---
 
-// Pass Management Specific
-const passForm = document.getElementById('pass-form');
-const activePassesTableBody = document.querySelector('#active-passes-table tbody');
+// NEW: Function to return the original HTML content of the Residents tab
+function getResidentsHtml() {
+    return `
+        <h2><i class="fas fa-user-friends"></i> Resident Management</h2>
+
+        <div class="card full-width resident-form-card">
+            <h3>Add/Update Resident</h3>
+            <form id="resident-form">
+                <div class="form-grid">
+                    <input type="text" id="resident-unit" placeholder="Unit Number (e.g., 101)" required>
+                    <input type="text" id="resident-name" placeholder="Full Name" required>
+                    <input type="text" id="resident-plate" placeholder="Primary Vehicle Plate" required>
+                    <input type="tel" id="resident-phone" placeholder="Phone (Optional)">
+                    <input type="email" id="resident-email" placeholder="Email (Optional)">
+                </div>
+                <button type="submit" class="btn btn-success"><i class="fas fa-save"></i> Save Resident</button>
+            </form>
+        </div>
+
+        <div class="card full-width">
+            <h3>All Registered Residents</h3>
+            <table id="residents-table" class="data-table">
+                <thead>
+                    <tr>
+                        <th>Unit</th>
+                        <th>Name</th>
+                        <th>Primary Plate</th>
+                        <th>Contact</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    `;
+}
+
+/**
+ * Fetches data from the backend API.
+ * @param {string} endpoint - The specific API route (e.g., '/passes/active').
+ */
+async function fetchData(endpoint) {
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        alert(`Could not connect to the server or fetch data: ${error.message}`);
+        return null;
+    }
+}
+
+/**
+ * Renders the data into the specified table element.
+ * @param {string} tableId - The ID of the <tbody> element to fill.
+ * @param {Array} data - The array of objects to display.
+ * @param {Function} rowMapper - Function to create the HTML string for one row.
+ */
+function renderTable(tableId, data, rowMapper) {
+    const tbody = document.querySelector(`#${tableId} tbody`);
+    if (!tbody || !data) return;
+
+    tbody.innerHTML = data.map(rowMapper).join('');
+}
+
+/**
+ * Checks if the current user has permission to view the given tab.
+ * @param {string} viewId - The ID of the view being accessed.
+ * @returns {boolean}
+ */
+function checkPermission(viewId) {
+    // Role logic: Manager can access everything; Guard cannot access 'residents' or 'management'.
+    if (viewId === 'residents' && currentUserRole === 'Guard') {
+        const residentsViewContainer = document.querySelector('#residents .view-container');
+        if (residentsViewContainer) {
+            // Display permission denied message
+            residentsViewContainer.innerHTML = `
+                <h2><i class="fas fa-lock"></i> Permission Denied</h2>
+                <div class="card full-width permission-denied-message">
+                    <p class="danger-text" style="font-size: 1.1rem; text-align: center;">
+                        Your current role (${currentUserRole}) does not have access to Resident Management.
+                    </p>
+                </div>
+            `;
+        }
+        return false;
+    }
+    return true; 
+}
 
 
-// --- ROLE-BASED ACCESS CONTROL (RBAC) MAPPING ---
-const restrictedTabs = {
-    'parking-passes-tab': 'Guard', 
-    'visitor-log-tab': 'Guard',
-    'towing-violations-tab': 'Guard', 
-    'resident-management-tab': 'Guard',
-    'management-section-tab': 'Manager', 
-};
+/**
+ * Switches the active tab content based on the button clicked.
+ * @param {string} targetTabId - The ID of the tab to display.
+ */
+function switchView(targetTabId) {
+    // Hide all content and remove active class from all buttons
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    // Show the target content and set the button as active
+    const targetContent = document.getElementById(targetTabId);
+    const targetButton = document.querySelector(`.tab-button[data-tab="${targetTabId}"]`);
+    
+    if (targetContent) {
+        targetContent.classList.add('active');
+    }
+    if (targetButton) {
+        targetButton.classList.add('active');
+    }
+
+    // Refresh data for the view being opened (and perform permission check)
+    if (targetTabId === 'passes') {
+        loadActivePasses();
+    } else if (targetTabId === 'residents') {
+        if (checkPermission('residents')) {
+            loadResidents();
+        } 
+    }
+    // No action needed for dashboard, violations, contact, or management currently
+}
+
+// --- Data Loading Functions ---
+
+async function loadDashboardStats() {
+    document.getElementById('stat-active-passes').textContent = '15';
+    document.getElementById('stat-violations').textContent = '3';
+    document.getElementById('stat-expiring').textContent = '2';
+    document.getElementById('stat-towed').textContent = '1';
+}
+
+async function loadActivePasses() {
+    const passes = await fetchData('/passes/active');
+    
+    const rowMapper = (pass) => {
+        const statusClass = new Date(pass.expires) < new Date() ? 'text-danger' : '';
+        return `
+            <tr class="${statusClass}">
+                <td>${pass.plate}</td>
+                <td>${pass.unit}</td>
+                <td>${new Date(pass.issued).toLocaleTimeString()}</td>
+                <td>${new Date(pass.expires).toLocaleString()}</td>
+                <td class="action-buttons">
+                    <button class="btn btn-danger btn-sm" onclick="revokePass('${pass.plate}')">Revoke</button>
+                </td>
+            </tr>
+        `;
+    };
+
+    renderTable('active-passes-table', passes || [], rowMapper);
+}
+
+// Function to safely re-attach the resident form listener
+function attachResidentFormListener() {
+    const form = document.getElementById('resident-form');
+    // Ensure the listener is only attached if the form exists
+    if (form) {
+        form.removeEventListener('submit', handleResidentFormSubmit); // Prevent duplicates
+        form.addEventListener('submit', handleResidentFormSubmit);
+    }
+}
+
+async function loadResidents() {
+    // 1. **FIX:** If the role is Manager (access granted), explicitly restore the original HTML
+    //    in case it was overwritten by a previous 'Permission Denied' state.
+    if (currentUserRole === 'Manager') {
+        const residentsViewContainer = document.querySelector('#residents .view-container');
+        if (residentsViewContainer) {
+            residentsViewContainer.innerHTML = getResidentsHtml();
+            attachResidentFormListener(); // Re-attach listener after restoring HTML
+        }
+    }
+    
+    // 2. Perform permission check (This will display the error message and RETURN if 'Guard')
+    if (!checkPermission('residents')) {
+        return; 
+    }
+    
+    // 3. Load data
+    const residents = await fetchData('/residents');
+    
+    const rowMapper = (resident) => `
+        <tr>
+            <td>${resident.unit}</td>
+            <td>${resident.name}</td>
+            <td>${resident.primaryPlate}</td>
+            <td>${resident.phone || 'N/A'}</td>
+            <td class="action-buttons">
+                <button class="btn btn-secondary btn-sm" onclick="editResident('${resident.unit}')">Edit</button>
+            </td>
+        </tr>
+    `;
+
+    renderTable('residents-table', residents || [], rowMapper);
+}
+
+// --- Action Handlers ---
+
+// Placeholder function for resident form
+async function handleResidentFormSubmit(event) {
+    event.preventDefault();
+    alert('Resident form submission handler triggered. (API call needed)');
+    // Implementation for submitting resident data goes here
+}
+
+function handleLogin() {
+    // Role is already set to 'Manager' at the top for guaranteed dev access.
+    isLoggedIn = true;
+    
+    document.getElementById('user-role').textContent = `${currentUserRole} Portal`;
+
+    const managementElements = document.querySelectorAll('.management-only');
+    managementElements.forEach(el => {
+        el.style.display = (currentUserRole === 'Manager') ? 'flex' : 'none';
+    });
+
+    switchView('dashboard');
+    loadDashboardStats();
+    loadActivePasses();
+    
+    // FIX: Call loadResidents here as well to ensure the initial table structure is populated
+    // or the error is correctly shown on initial page load if the role was 'Guard'.
+    loadResidents();
+}
+
+async function handlePassIssue(event) {
+    event.preventDefault();
+    const plate = document.getElementById('pass-plate').value.toUpperCase();
+    const unit = document.getElementById('pass-unit').value;
+    const duration = parseInt(document.getElementById('pass-duration').value);
+
+    const response = await fetch(`${API_BASE_URL}/passes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ plate, unit, duration }),
+    });
+
+    if (response.ok) {
+        alert('Temporary pass issued successfully!');
+        document.getElementById('temp-pass-form').reset();
+        loadActivePasses(); // Reload data
+    } else {
+        const errorData = await response.json();
+        alert(`Failed to issue pass: ${errorData.message}`);
+    }
+}
+
+async function revokePass(plate) {
+    if (confirm(`Are you sure you want to revoke the pass for plate ${plate}?`)) {
+        const response = await fetch(`${API_BASE_URL}/passes/${plate}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert(`Pass for ${plate} revoked.`);
+            loadActivePasses(); // Reload data
+        } else {
+            alert('Failed to revoke pass.');
+        }
+    }
+}
 
 
-// ----------------------------------------------------------------------------------
-// ## INITIALIZATION & UTILITIES
-// ----------------------------------------------------------------------------------
+// --- Initialization ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Attach event listeners
-    if (logOutButton) {
-        logOutButton.addEventListener('click', handleLogout);
-    }
-    
-    // 2. Attach tab switching logic
-    attachTabListeners();
+    // 1. Initial State Check (Simulated Login)
+    handleLogin(); 
 
-    // 3. Attach feature form handlers
-    document.getElementById('resident-form').addEventListener('submit', handleResidentSubmit);
-    document.getElementById('gate-code-form').addEventListener('submit', handleGateCodeSubmit);
-    
-    // Attach Parking Pass Form Handler
-    if (passForm) {
-        passForm.addEventListener('submit', handlePassSubmit); 
-    }
-
-    // 4. Attach Global Search Listener (debounced for performance)
-    if (globalSearchInput) {
-        globalSearchInput.addEventListener('input', debounce(handleGlobalSearch, 300));
-    }
-    
-    // 5. Initialize Sub-Tab Listeners
-    attachSubTabListeners(); 
-
-    // 6. Show the entire dashboard immediately
-    showDashboardView(); 
-});
-
-/**
- * Debounce function to limit how often a function runs.
- */
-function debounce(func, delay) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), delay);
-    };
-}
-
-
-// ----------------------------------------------------------------------------------
-// ## AUTHENTICATION AND TAB MANAGEMENT 
-// ----------------------------------------------------------------------------------
-
-function showDashboardView() {
-    if (mainDashboard) mainDashboard.style.display = 'block';
-    if (logOutButton) logOutButton.style.display = 'block';
-    
-    updateInterfacePermissions(); 
-    
-    // Select the default tab (Parking Passes)
-    // Check if the element exists before accessing style
-    if (document.getElementById('parking-passes-tab')) {
-        document.getElementById('parking-passes-tab').style.display = 'block';
-    }
-    const defaultTabButton = document.querySelector('.tabs-nav .tab-button[data-tab="parking-passes-tab"]');
-    if (defaultTabButton) {
-        defaultTabButton.classList.add('active');
-    }
-    
-    // Fetch initial data for the default tab
-    fetchActiveParkingPasses();
-    
-    // Initialize default sub-tab state if Manager tab is visible
-    if (currentUser.role === 'Manager') {
-        const defaultSubTabButton = document.querySelector('.sub-tabs-nav .sub-tab-button[data-sub-tab="gate-codes-sub"]');
-        if (defaultSubTabButton) {
-            defaultSubTabButton.classList.add('active');
-        }
-    }
-}
-
-function handleLogout() {
-    // Simulate a log out
-    currentUser = null;
-    alert('Logged out. Reload the page to reset DEV MODE access.');
-
-    if (mainDashboard) mainDashboard.style.display = 'none';
-    if (logOutButton) logOutButton.style.display = 'none';
-    if (userInfoDisplay) userInfoDisplay.textContent = 'Logged Out';
-}
-
-function updateInterfacePermissions() {
-    const userRole = currentUser ? currentUser.role : 'Guest';
-    if (userInfoDisplay) {
-        userInfoDisplay.textContent = `User: ${currentUser.username} | Role: ${userRole} (DEV MODE)`;
-    }
-
-    // Hide or show Manager tabs based on role
-    document.querySelectorAll('.tab-button[data-tab="management-section-tab"]').forEach(btn => {
-        btn.style.display = (userRole === 'Manager') ? 'inline-flex' : 'none';
-    });
-}
-
-/**
- * Handles clicks on the main navigation tabs.
- */
-function attachTabListeners() {
+    // 2. Attach Tab Switching Listeners
     document.querySelectorAll('.tabs-nav .tab-button').forEach(button => {
         button.addEventListener('click', () => {
-            const tabId = button.getAttribute('data-tab');
-            const userRole = currentUser ? currentUser.role : 'Guest';
-            const requiredRole = restrictedTabs[tabId];
-
-            // 1. Permission Check
-            const meetsRequirement = (
-                (requiredRole === 'Guard' && (userRole === 'Guard' || userRole === 'Manager')) ||
-                (requiredRole === 'Manager' && userRole === 'Manager')
-            );
-
-            if (!meetsRequirement) {
-                alert(`Permission Denied: ${requiredRole} access required.`);
-                return;
-            }
-            
-            // 2. Update button styles
-            document.querySelectorAll('.tabs-nav .tab-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            // 3. Toggle content visibility
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            const tabElement = document.getElementById(tabId);
-            if (tabElement) {
-                tabElement.style.display = 'block';
-            }
-
-
-            // 4. Trigger data fetch
-            switch (tabId) {
-                case 'parking-passes-tab':
-                    fetchActiveParkingPasses();
-                    break;
-                case 'resident-management-tab':
-                    fetchResidents();
-                    break;
-                case 'management-section-tab':
-                    // On clicking the main Manager tab, switch to the default sub-tab (Gate Codes)
-                    const gateCodesSub = document.getElementById('gate-codes-sub');
-                    if (gateCodesSub) {
-                        gateCodesSub.style.display = 'block';
-                    }
-                    // Deactivate and activate sub-tab buttons
-                    document.querySelectorAll('.sub-tabs-nav .sub-tab-button').forEach(btn => btn.classList.remove('active'));
-                    const gateCodesButton = document.querySelector('.sub-tabs-nav .sub-tab-button[data-sub-tab="gate-codes-sub"]');
-                    if (gateCodesButton) {
-                        gateCodesButton.classList.add('active');
-                    }
-                    fetchGateCodes(); 
-                    break;
-                case 'visitor-log-tab':
-                    // fetchVisitorLog();
-                    break;
-                case 'towing-violations-tab':
-                    // InitializeViolationSearch();
-                    break;
-            }
+            switchView(button.getAttribute('data-tab'));
         });
     });
-}
 
-/**
- * Initializes listeners for the sub-tabs within the Management section.
- */
-function attachSubTabListeners() {
-    document.querySelectorAll('.sub-tabs-nav .sub-tab-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const subTabId = button.getAttribute('data-sub-tab');
+    // 3. Attach Form Submission Listeners (Attach ONLY once for forms in the initial DOM)
+    document.getElementById('temp-pass-form').addEventListener('submit', handlePassIssue);
+    // The resident form listener is now attached inside the loadResidents/restore logic.
 
-            // 1. Update button styles
-            document.querySelectorAll('.sub-tabs-nav .sub-tab-button').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            // 2. Toggle content visibility
-            document.querySelectorAll('.sub-tab-content').forEach(content => {
-                content.style.display = 'none';
-            });
-            const subTabElement = document.getElementById(subTabId);
-            if (subTabElement) {
-                 subTabElement.style.display = 'block';
-            }
-           
-            
-            // 3. Trigger data fetch for the selected sub-tab
-            switch (subTabId) {
-                case 'gate-codes-sub':
-                    fetchGateCodes();
-                    break;
-                case 'reporting-sub':
-                    fetchReportingData();
-                    break;
-                case 'system-log-sub':
-                    fetchSystemActivityLog(); 
-                    break;
-                case 'user-management-sub':
-                    // fetchUserAccounts();
-                    break;
-            }
-        });
+    // 4. Attach Logout Listener
+    document.getElementById('logout-button').addEventListener('click', () => {
+        alert("Logged out. Restart application to log back in.");
+        location.reload(); 
     });
-    
-    // Ensure the default sub-tab (Gate Codes) is shown on first load of the main Management tab
-    const defaultSubTab = document.getElementById('gate-codes-sub');
-    if(defaultSubTab) {
-        defaultSubTab.style.display = 'block';
-    }
-}
-
-
-// ----------------------------------------------------------------------------------
-// ## PROTECTED API UTILITY 
-// ----------------------------------------------------------------------------------
-
-/**
- * Wrapper for all authenticated API calls.
- */
-async function fetchProtected(endpoint, options = {}) {
-    if (!currentUser || !currentUser.token) {
-        alert('Authentication error. Please reload.');
-        handleLogout();
-        throw new Error('User not authenticated.'); 
-    }
-    
-    options.headers = options.headers || {};
-    options.headers['Content-Type'] = 'application/json';
-    options.headers['Authorization'] = `Bearer ${currentUser.token}`; 
-    options.headers['X-User-Role'] = currentUser.role;
-    options.headers['X-User-Id'] = currentUser.userId; // Sent for issued_by tracking
-
-    const response = await fetch(`${API_BASE}${endpoint}`, options);
-
-    if (response.status === 401 || response.status === 403) {
-        console.error('Authorization failed:', response.status);
-        alert('Permission Denied by Server. Logging out.');
-        handleLogout(); 
-        throw new Error('Authorization failed.'); 
-    }
-
-    return response;
-}
-
-
-// ----------------------------------------------------------------------------------
-// ## CORE FEATURE LOGIC: PARKING PASSES 
-// ----------------------------------------------------------------------------------
-
-/**
- * Handles the submission of the Temporary Pass form.
- */
-async function handlePassSubmit(event) {
-    event.preventDefault();
-    
-    const plate = document.getElementById('pass-plate').value.trim().toUpperCase();
-    const unit = document.getElementById('pass-unit').value.trim();
-    const duration = parseInt(document.getElementById('pass-duration').value, 10);
-    
-    if (!plate || !unit || isNaN(duration) || duration <= 0) {
-        alert("Please ensure all fields are valid.");
-        return;
-    }
-
-    try {
-        const response = await fetchProtected('/passes/issue', {
-            method: 'POST',
-            body: JSON.stringify({ plate, unit, duration })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert(`Pass issued for ${plate}! Expires: ${new Date(result.pass.expires_at).toLocaleString()}`);
-            passForm.reset();
-            // Refresh the table to show the new pass
-            fetchActiveParkingPasses(); 
-        } else {
-            alert(`Failed to issue pass: ${result.message}`);
-        }
-    } catch (error) {
-        console.error('Error in Pass Submission:', error);
-        alert('An error occurred while connecting to the server.');
-    }
-}
-
-/**
- * Fetches and renders all active parking passes.
- */
-async function fetchActiveParkingPasses() {
-    console.log("Fetching active parking passes...");
-    
-    try {
-        const response = await fetchProtected('/passes/active');
-        const data = await response.json();
-
-        if (data.success && activePassesTableBody) {
-            renderActivePasses(data.passes);
-        } else {
-            if(activePassesTableBody) {
-                 activePassesTableBody.innerHTML = '<tr><td colspan="4">Failed to load passes.</td></tr>';
-            }
-           
-        }
-
-    } catch (error) {
-        console.error("Error fetching active parking passes:", error);
-         if(activePassesTableBody) {
-            activePassesTableBody.innerHTML = '<tr><td colspan="4">Server connection failed. Ensure backend is running.</td></tr>';
-         }
-    }
-}
-
-/**
- * Renders the array of active passes into the table body.
- */
-function renderActivePasses(passes) {
-    if (!activePassesTableBody) return;
-    activePassesTableBody.innerHTML = ''; // Clear existing rows
-    
-    if (passes.length === 0) {
-        activePassesTableBody.innerHTML = '<tr><td colspan="4">No active temporary passes.</td></tr>';
-        return;
-    }
-    
-    passes.forEach(pass => {
-        const expiresTime = new Date(pass.expires_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        const expiresDate = new Date(pass.expires_at).toLocaleDateString();
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${pass.plate}</td>
-            <td>${pass.unit}</td>
-            <td>${expiresDate} ${expiresTime}</td>
-            <td>
-                <button class="btn secondary-btn small-btn" data-id="${pass.id}" onclick="revokePass(${pass.id})">Revoke</button>
-            </td>
-        `;
-        activePassesTableBody.appendChild(row);
-    });
-}
-
-/**
- * Revokes (deletes) an active pass via the API.
- */
-async function revokePass(passId) {
-    if (!confirm(`Are you sure you want to revoke pass ID ${passId}? This action cannot be undone.`)) {
-        return;
-    }
-    
-    try {
-        const response = await fetchProtected(`/passes/revoke/${passId}`, {
-            method: 'DELETE'
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            alert(result.message);
-            // Refresh the table to show the pass is gone
-            fetchActiveParkingPasses(); 
-        } else {
-            alert(`Revocation failed: ${result.message}`);
-        }
-    } catch (error) {
-        console.error('Error during pass revocation:', error);
-        alert('An error occurred while connecting to the server for revocation.');
-    }
-}
-
-// ----------------------------------------------------------------------------------
-// ## OTHER FEATURE PLACEHOLDERS (Unchanged)
-// ----------------------------------------------------------------------------------
-
-async function fetchResidents() {
-    console.log("Fetching resident list...");
-    // Fetch logic here...
-}
-
-async function handleResidentSubmit(event) {
-    event.preventDefault();
-    console.log("Submitting new/updated resident data...");
-    // Submission logic here...
-}
-
-async function handleGlobalSearch() {
-    console.log(`Global search triggered for: ${globalSearchInput.value}`);
-    // Search logic here...
-}
-
-
-// --- Manager Features ---
-
-async function fetchGateCodes() {
-    console.log("Fetching active gate codes...");
-    // Fetch logic here...
-}
-
-async function handleGateCodeSubmit(event) {
-    event.preventDefault();
-    console.log("Submitting new gate code...");
-    // Submission logic here...
-}
-
-async function fetchReportingData() {
-    console.log("Fetching reporting data...");
-    
-    // 1. Fetch Violation Summary
-    try {
-        const violationResponse = await fetchProtected('/reports/violation-summary');
-        const violationData = await violationResponse.json();
-        renderViolationSummary(violationData);
-    } catch (error) {
-        console.error('Error fetching violation summary:', error);
-    }
-    
-    // 2. Fetch Pass Expiration Forecast
-    try {
-        const forecastResponse = await fetchProtected('/reports/pass-forecast');
-        const forecastData = await forecastResponse.json();
-        renderExpirationForecast(forecastData);
-    } catch (error) {
-        console.error('Error fetching pass forecast:', error);
-    }
-}
-
-/**
- * Renders the violation summary data into the Reporting table.
- */
-function renderViolationSummary(summary) {
-    const tableBody = document.getElementById('violation-summary-body');
-    if (!tableBody) return;
-    
-    const total = (summary.Towed || 0) + (summary.Booted || 0) + (summary.Warning || 0);
-    
-    const data = [
-        { type: "Towed", count: summary.Towed || 0 },
-        { type: "Booted", count: summary.Booted || 0 },
-        { type: "Warning", count: summary.Warning || 0 }
-    ];
-    
-    tableBody.innerHTML = data.map(item => `
-        <tr>
-            <td>${item.type}</td>
-            <td>${item.count}</td>
-            <td>${total > 0 ? ((item.count / total * 100).toFixed(1)) : 0}%</td>
-        </tr>
-    `).join('');
-}
-
-/**
- * Renders the pass expiration forecast data into the Reporting table.
- */
-function renderExpirationForecast(forecast) {
-    const tableBody = document.getElementById('expiration-forecast-table');
-    if (!tableBody) return;
-    const tbody = tableBody.querySelector('tbody');
-    if (!tbody) return;
-    
-    tbody.innerHTML = ''; // Clear previous data
-    
-    const today = new Date();
-    const sevenDaysFromNow = today.getTime() + 7 * 24 * 60 * 60 * 1000;
-    
-    // The forecast data from the backend is assumed to be an array of objects
-    const filteredForecast = forecast.filter(p => new Date(p.expires).getTime() < sevenDaysFromNow);
-
-    if (filteredForecast.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3">No passes are expiring in the next 7 days.</td></tr>';
-        return;
-    }
-
-    filteredForecast.forEach(pass => {
-        const expiresDate = new Date(pass.expires);
-        const daysLeft = Math.ceil((expiresDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-        
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${pass.plate}</td>
-            <td>${pass.unit}</td>
-            <td><span class="${daysLeft <= 3 ? 'danger-text' : ''}">${daysLeft} Days</span></td> 
-        `; // FIX APPLIED HERE: Removed extra <td> 
-        tbody.appendChild(row);
-    });
-}
-
-
-async function fetchSystemActivityLog() {
-    console.log("Fetching system activity log...");
-    // Fetch logic here...
-}
+});
