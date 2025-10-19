@@ -128,7 +128,7 @@ body {
     display: block;
 }
 
-/* Hide Management tabs by default */
+/* Hide Management tabs by default (JS will control visibility) */
 .management-only {
     display: none;
 }
@@ -145,6 +145,7 @@ h2 {
 }
 
 .card {
+    /* THIS IS THE CRITICAL STYLING FOR YOUR MANAGEMENT SECTION CARDS */
     background: var(--background-light);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-default);
@@ -159,6 +160,15 @@ h2 {
     font-size: 1.25rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
+}
+
+/* Width Control */
+.half-width {
+    max-width: 50%;
+}
+
+.full-width {
+    width: 100%; /* Ensures cards take full available width in their container */
 }
 
 /* Buttons */
@@ -226,7 +236,7 @@ textarea {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-default);
     font-size: 1rem;
-    width: 100%; /* Default to full width in form flex container */
+    width: 100%;
 }
 
 textarea {
@@ -346,7 +356,7 @@ textarea {
 }
 
 /* ================================================= */
-/* 7. CONTACT MANAGEMENT STYLING (NEW)               */
+/* 7. CONTACT MANAGEMENT STYLING                     */
 /* ================================================= */
 
 .contact-grid {
@@ -450,5 +460,9 @@ textarea {
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+    }
+    
+    .half-width {
+        max-width: 100%;
     }
 }

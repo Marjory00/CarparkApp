@@ -4,13 +4,15 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
 // --- State Variables ---
-// FIX: Explicitly set default role to 'Manager' for full development access
 let currentUserRole = 'Manager'; 
 let isLoggedIn = false;
 
 // --- Helper Functions ---
 
-// NEW: Function to return the original HTML content of the Residents tab
+/**
+ * Returns the standard HTML content for the Resident Management tab.
+ * This is used to restore the view if it was overwritten by an error message.
+ */
 function getResidentsHtml() {
     return `
         <h2><i class="fas fa-user-friends"></i> Resident Management</h2>
@@ -56,11 +58,13 @@ async function fetchData(endpoint) {
     try {
         const response = await fetch(`${API_BASE_URL}${endpoint}`);
         if (!response.ok) {
+            // Throw the specific NetworkError message if connection fails
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         return await response.json();
     } catch (error) {
         console.error('Fetch error:', error);
+        // Alerting the user about the connection issue
         alert(`Could not connect to the server or fetch data: ${error.message}`);
         return null;
     }
@@ -81,20 +85,21 @@ function renderTable(tableId, data, rowMapper) {
 
 /**
  * Checks if the current user has permission to view the given tab.
+ * Displays an error message if permission is denied.
  * @param {string} viewId - The ID of the view being accessed.
  * @returns {boolean}
  */
 function checkPermission(viewId) {
     // Role logic: Manager can access everything; Guard cannot access 'residents' or 'management'.
-    if (viewId === 'residents' && currentUserRole === 'Guard') {
-        const residentsViewContainer = document.querySelector('#residents .view-container');
-        if (residentsViewContainer) {
+    if ((viewId === 'residents' || viewId === 'management') && currentUserRole === 'Guard') {
+        const viewContainer = document.querySelector(`#${viewId} .view-container`);
+        if (viewContainer) {
             // Display permission denied message
-            residentsViewContainer.innerHTML = `
+            viewContainer.innerHTML = `
                 <h2><i class="fas fa-lock"></i> Permission Denied</h2>
                 <div class="card full-width permission-denied-message">
                     <p class="danger-text" style="font-size: 1.1rem; text-align: center;">
-                        Your current role (${currentUserRole}) does not have access to Resident Management.
+                        Your current role (${currentUserRole}) does not have access to this section.
                     </p>
                 </div>
             `;
@@ -130,19 +135,20 @@ function switchView(targetTabId) {
     }
 
     // Refresh data for the view being opened (and perform permission check)
-    if (targetTabId === 'passes') {
+    if (targetTabId === 'dashboard') {
+        loadDashboardStats();
+    } else if (targetTabId === 'passes') {
         loadActivePasses();
     } else if (targetTabId === 'residents') {
-        if (checkPermission('residents')) {
-            loadResidents();
-        } 
+        // The loadResidents function now handles both permission check AND view restoration
+        loadResidents();
     }
-    // No action needed for dashboard, violations, contact, or management currently
 }
 
 // --- Data Loading Functions ---
 
 async function loadDashboardStats() {
+    // Hardcoded stats for now until backend endpoints are ready
     document.getElementById('stat-active-passes').textContent = '15';
     document.getElementById('stat-violations').textContent = '3';
     document.getElementById('stat-expiring').textContent = '2';
@@ -181,12 +187,12 @@ function attachResidentFormListener() {
 }
 
 async function loadResidents() {
-    // 1. **FIX:** If the role is Manager (access granted), explicitly restore the original HTML
-    //    in case it was overwritten by a previous 'Permission Denied' state.
+    const viewContainer = document.querySelector('#residents .view-container');
+    
+    // 1. FIX: Always restore the original HTML if the role has permission.
     if (currentUserRole === 'Manager') {
-        const residentsViewContainer = document.querySelector('#residents .view-container');
-        if (residentsViewContainer) {
-            residentsViewContainer.innerHTML = getResidentsHtml();
+        if (viewContainer) {
+            viewContainer.innerHTML = getResidentsHtml();
             attachResidentFormListener(); // Re-attach listener after restoring HTML
         }
     }
@@ -224,23 +230,22 @@ async function handleResidentFormSubmit(event) {
 }
 
 function handleLogin() {
-    // Role is already set to 'Manager' at the top for guaranteed dev access.
+    // Simulates successful login and sets UI based on role
     isLoggedIn = true;
     
     document.getElementById('user-role').textContent = `${currentUserRole} Portal`;
 
+    // Show/Hide Management tab and buttons based on role
     const managementElements = document.querySelectorAll('.management-only');
     managementElements.forEach(el => {
         el.style.display = (currentUserRole === 'Manager') ? 'flex' : 'none';
     });
-
-    switchView('dashboard');
-    loadDashboardStats();
-    loadActivePasses();
     
-    // FIX: Call loadResidents here as well to ensure the initial table structure is populated
-    // or the error is correctly shown on initial page load if the role was 'Guard'.
-    loadResidents();
+    // Set initial view and load initial data
+    switchView('dashboard');
+    
+    // Also run loadResidents to ensure it handles the permission check/data load on startup
+    loadResidents(); 
 }
 
 async function handlePassIssue(event) {
@@ -249,37 +254,23 @@ async function handlePassIssue(event) {
     const unit = document.getElementById('pass-unit').value;
     const duration = parseInt(document.getElementById('pass-duration').value);
 
-    const response = await fetch(`${API_BASE_URL}/passes`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ plate, unit, duration }),
-    });
-
-    if (response.ok) {
-        alert('Temporary pass issued successfully!');
-        document.getElementById('temp-pass-form').reset();
-        loadActivePasses(); // Reload data
-    } else {
-        const errorData = await response.json();
-        alert(`Failed to issue pass: ${errorData.message}`);
-    }
+    // Placeholder for API call
+    alert(`Pass for ${plate} issued to Unit ${unit} for ${duration} hours. (API call needed)`);
+    document.getElementById('temp-pass-form').reset();
+    loadActivePasses(); 
 }
 
 async function revokePass(plate) {
     if (confirm(`Are you sure you want to revoke the pass for plate ${plate}?`)) {
-        const response = await fetch(`${API_BASE_URL}/passes/${plate}`, {
-            method: 'DELETE',
-        });
-
-        if (response.ok) {
-            alert(`Pass for ${plate} revoked.`);
-            loadActivePasses(); // Reload data
-        } else {
-            alert('Failed to revoke pass.');
-        }
+        // Placeholder for API call
+        alert(`Pass for ${plate} revoked. (API call needed)`);
+        loadActivePasses(); 
     }
+}
+
+// Placeholder for editResident
+function editResident(unit) {
+    alert(`Editing resident for Unit ${unit}. (Functionality pending)`);
 }
 
 
@@ -298,11 +289,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Attach Form Submission Listeners (Attach ONLY once for forms in the initial DOM)
     document.getElementById('temp-pass-form').addEventListener('submit', handlePassIssue);
-    // The resident form listener is now attached inside the loadResidents/restore logic.
+    // The resident form listener is attached/re-attached inside loadResidents
 
     // 4. Attach Logout Listener
     document.getElementById('logout-button').addEventListener('click', () => {
         alert("Logged out. Restart application to log back in.");
         location.reload(); 
     });
+    
+    // 5. Check if the Management tab should be shown on initial load
+    checkPermission('management');
 });
