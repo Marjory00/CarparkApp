@@ -19,6 +19,32 @@ This system has been upgraded from a client-side proof-of-concept to a robust, *
 
 The file structure overview below reflects the architecture, but these files are considered proprietary or contain sensitive configuration data.
 
+
+---
+
+## 📸 Application Screenshot
+
+The primary management dashboard provides a unified view of Passes, Residents, and Violations.
+
+### Dashboard 
+![CarparkApp Management Dashboard](assets/images/screenshot/dashboard.png)
+
+### Resident Management
+![CarparkApp Management Dashboard](assets/images/screenshot/dashboard.png)
+
+### Passes & Permits
+![CarparkApp Management Dashboard](assets/images/screenshot/passes.png)
+
+### Parking Violations and Appeals
+![CarparkApp Management Dashboard](assets/images/screenshot/violations-appeals.png)
+
+### Contact Management
+![CarparkApp Management Dashboard](assets/images/screenshot/contact.png)
+
+### System Management
+![CarparkApp Management Dashboard](assets/images/screenshot/system.png)
+
+
 ---
 
 ## 💡 Core Purpose & Features
