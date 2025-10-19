@@ -26,30 +26,35 @@
     <main class="main-content">
         <div class="tabs-nav">
             <button class="tab-button active" data-tab="dashboard">
-                <i class="fas fa-tachometer-alt"></i> Dashboard
+                <i class="fas fa-columns"></i> Dashboard
             </button>
+            
             <button class="tab-button" data-tab="residents">
-                <i class="fas fa-user-friends"></i> Resident Management
+                <i class="fas fa-users"></i> Resident Management
             </button>
+            
             <button class="tab-button" data-tab="passes">
-                <i class="fas fa-car-side"></i> Passes & Permits
+                <i class="fas fa-id-card"></i> Passes & Permits
             </button>
+            
             <button class="tab-button" data-tab="violations">
-                <i class="fas fa-exclamation-triangle"></i> Violations & Appeals
+                <i class="fas fa-ban"></i> Violations & Appeals
             </button>
+            
             <button class="tab-button" data-tab="contact">
-                <i class="fas fa-info-circle"></i> Contact Management
+                <i class="fas fa-phone-alt"></i> Contact Management
             </button>
+            
             <button class="tab-button management-only" data-tab="management">
-                <i class="fas fa-user-shield"></i> System Management
+                <i class="fas fa-cog"></i> System Management
             </button>
         </div>
 
         <div id="tabs-content" class="tabs-content"> 
-
+            
             <div id="dashboard" class="tab-content active">
                 <div class="view-container">
-                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                    <h2><i class="fas fa-columns"></i> Dashboard Overview</h2>
                     <div class="stats-grid">
                         <div class="stat-card">
                             <h3>Active Passes</h3>
@@ -84,7 +89,7 @@
 
             <div id="residents" class="tab-content">
                 <div class="view-container">
-                    <h2><i class="fas fa-user-friends"></i> Resident Management</h2>
+                    <h2><i class="fas fa-users"></i> Resident Management</h2>
 
                     <div class="card full-width resident-form-card">
                         <h3>Add/Update Resident</h3>
@@ -121,7 +126,7 @@
 
             <div id="passes" class="tab-content">
                 <div class="view-container">
-                    <h2><i class="fas fa-car-side"></i> Temporary Passes</h2>
+                    <h2><i class="fas fa-id-card"></i> Temporary Passes</h2>
                     
                     <div class="card half-width">
                         <h3>Issue Temporary Visitor Pass</h3>
@@ -141,7 +146,7 @@
 
                     <div class="card full-width">
                         <h3>Active Temporary Passes</h3>
-                        <table id="active-passes-table" class="data-table">
+                        <table id="active-passes-table" class:="data-table">
                             <thead>
                                 <tr>
                                     <th>Plate</th>
@@ -160,7 +165,7 @@
 
             <div id="violations" class="tab-content">
                 <div class="view-container">
-                    <h2><i class="fas fa-exclamation-triangle"></i> Violations Management</h2>
+                    <h2><i class="fas fa-ban"></i> Violations Management</h2>
 
                     <div class="card half-width">
                         <h3>Report New Violation</h3>
@@ -206,7 +211,7 @@
             
             <div id="contact" class="tab-content">
                 <div class="view-container">
-                    <h2><i class="fas fa-headset"></i> Contact Apartment Management</h2>
+                    <h2><i class="fas fa-phone-alt"></i> Contact Apartment Management</h2>
 
                     <div class="card">
                         <h3>Management Contact Information</h3>
@@ -256,7 +261,7 @@
 
             <div id="management" class="tab-content management-only">
                 <div class="view-container">
-                    <h2><i class="fas fa-user-shield"></i> System Management</h2>
+                    <h2><i class="fas fa-cog"></i> System Management</h2>
                     <p>This section is for user, gate code, and global system settings. (Manager Role Required)</p>
                     
                     <div class="card full-width">
@@ -271,7 +276,8 @@
                 </div>
             </div>
             
-        </div> </main> 
+        </div>
+    </main> 
 
     <script src="app.js"></script>
 </body>
