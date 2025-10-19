@@ -27,22 +27,22 @@ The file structure overview below reflects the architecture, but these files are
 The primary management dashboard provides a unified view of Passes, Residents, and Violations.
 
 ### Dashboard 
-![CarparkApp Management Dashboard](assets/images/screenshot/dashboard.png)
+![CarparkApp Main Dashboard Overview](./images/screenshot/Dashboard.png)
 
 ### Resident Management
-![CarparkApp Management Dashboard](assets/images/screenshot/dashboard.png)
+![CarparkApp Resident Management Tab](assets/images/screenshot/Resident.png)
 
 ### Passes & Permits
-![CarparkApp Management Dashboard](assets/images/screenshot/passes.png)
+![CarparkApp Passes and Permits Tab](assets/images/screenshot/passes.png)
 
 ### Parking Violations and Appeals
-![CarparkApp Management Dashboard](assets/images/screenshot/violations-appeals.png)
+![CarparkApp Violations and Appeals Tab](assets/images/screenshot/violations-appeals.png)
 
 ### Contact Management
-![CarparkApp Management Dashboard](assets/images/screenshot/contact.png)
+![CarparkApp Contact Management Tab](assets/images/screenshot/contact.png)
 
 ### System Management
-![CarparkApp Management Dashboard](assets/images/screenshot/system.png)
+![CarparkApp System Management Tab](assets/images/screenshot/system.png)
 
 
 ---
